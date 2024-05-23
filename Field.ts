@@ -16,7 +16,7 @@ export default class Field {
         this.sizeY = y
     }
 
-    getCell(x: number, y: number): Cell {
+    getCell(x: number, y: number) {
         x %= this.sizeX
         y %= this.sizeY
         x = x < 0 ? x + this.sizeX : x
@@ -24,7 +24,7 @@ export default class Field {
         return this.Cells[x][y]
     }
 
-    getSymmetric(x: number, y: number, dx: number, dy: number): Cell[] {
+    getSymmetric(x: number, y: number, dx: number, dy: number) {
         const result: Cell[] = [
             this.getCell(x + dx, y + dy),
             this.getCell(x - dx, y - dy),
@@ -33,5 +33,17 @@ export default class Field {
         ]
 
         return result
+    }
+
+    turn() {
+        this.iterate((x, y, cell) => cell?.action(x, y))
+    }
+
+    private iterate(callback: (x: number, y: number, cell: Cell) => void) {
+        for (let x = 0; x < this.sizeX; x++) {
+            for (let y = 0; y < this.sizeY; y++) {
+                callback(x, y, this.getCell(x, y))
+            }
+        }
     }
 }
