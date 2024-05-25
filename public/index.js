@@ -1,5 +1,5 @@
-import Field from './dist/Field.js';
-import DummyCell from './dist/Cells/DummyCell.js';
+import Field from './dist/src/Field.js';
+import DummyCell from './dist/src/Cells/DummyCell.js';
 
 const fieldSizeX = 10;
 const fieldSizeY = 10;
