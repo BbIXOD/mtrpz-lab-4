@@ -42,8 +42,6 @@ body, html {
     background-color: lightgray;
     border: 1px solid white;
     user-select: none;
-    min-width: 10px;
-    min-height: 10px;
 }
 
 #panel {
