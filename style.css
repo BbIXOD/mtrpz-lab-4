@@ -40,7 +40,6 @@ body, html {
     justify-content: center;
     align-items: center;
     background-color: lightgray;
-    border: 1px solid white;
     user-select: none;
 }
 
