@@ -25,14 +25,16 @@ for (let x = 0; x < fieldSizeX; x++) {
 function resizeCells() {
     const containerWidth = fieldContainer.clientWidth;
     const containerHeight = window.innerHeight - panelElement.offsetHeight;
-    const cellWidth = containerWidth / fieldSizeX;
-    const cellHeight = containerHeight / fieldSizeY;
-    const baseCellSize = Math.min(cellWidth, cellHeight);
+
+    const baseCellWidth = containerWidth / fieldSizeX;
+    const baseCellHeight = containerHeight / fieldSizeY;
+    const baseCellSize = Math.min(baseCellWidth, baseCellHeight);
 
     const cellSize = baseCellSize * scaleFactor;
 
-    fieldElement.style.width = `${cellSize * fieldSizeX}px`;
-    fieldElement.style.height = `${cellSize * fieldSizeY}px`;
+    fieldElement.style.width = `${baseCellSize * fieldSizeX}px`;
+    fieldElement.style.height = `${baseCellSize * fieldSizeY}px`;
+
     fieldElement.style.gridTemplateColumns = `repeat(${fieldSizeX}, ${cellSize}px)`;
     fieldElement.style.gridTemplateRows = `repeat(${fieldSizeY}, ${cellSize}px)`;
 
