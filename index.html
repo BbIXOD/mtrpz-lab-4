@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window with Field and Panel</title>
+    <link rel="stylesheet" href="style.css?v=${Date.now()}">
+</head>
+<body>
+    <div id="field-container">
+        <div id="scaleDisplay">Scale: 100%</div>
+        <div id="field"></div>
+    </div>
+    <div id="panel">
+        <button id="button1">Button 1</button>
+        <button id="buttonIncreaseSize">Increase Size</button>
+        <button id="buttonDecreaseSize">Decrease Size</button>
+        <button id="buttonResetSize">Reset Size</button>
+    </div>
+    <script type="module">
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = `index.js?v=${Date.now()}`;
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>
