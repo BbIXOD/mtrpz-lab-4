@@ -34,6 +34,10 @@ function resizeCells() {
     });
 }
 
+while (fieldElement.firstChild) {
+    fieldElement.removeChild(fieldElement.firstChild);
+}
+
 for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
         const cellElement = document.createElement('div');
