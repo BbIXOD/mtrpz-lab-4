@@ -11,8 +11,28 @@ for (let x = 0; x < fieldSizeX; x++) {
     }
 }
 
+const fieldContainer = document.getElementById('field-container');
 const fieldElement = document.getElementById('field');
-fieldElement.style.gridTemplateColumns = `repeat(${fieldSizeX}, 1fr)`;
+const panelElement = document.getElementById('panel');
+
+function resizeCells() {
+    const containerWidth = fieldContainer.clientWidth;
+    const containerHeight = window.innerHeight - panelElement.offsetHeight;
+    const cellWidth = containerWidth / fieldSizeX;
+    const cellHeight = containerHeight / fieldSizeY;
+    const cellSize = Math.min(cellWidth, cellHeight);
+
+    fieldElement.style.width = `${cellSize * fieldSizeX}px`;
+    fieldElement.style.height = `${cellSize * fieldSizeY}px`;
+    fieldElement.style.gridTemplateColumns = `repeat(${fieldSizeX}, ${cellSize}px)`;
+    fieldElement.style.gridTemplateRows = `repeat(${fieldSizeY}, ${cellSize}px)`;
+
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        cell.style.width = `${cellSize}px`;
+        cell.style.height = `${cellSize}px`;
+    });
+}
 
 for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
@@ -43,3 +63,7 @@ document.getElementById('button1').addEventListener('click', handleButtonClick);
 document.getElementById('button2').addEventListener('click', handleButtonClick);
 document.getElementById('button3').addEventListener('click', handleButtonClick);
 
+window.addEventListener('load', resizeCells);
+window.addEventListener('resize', resizeCells);
+
+resizeCells();
