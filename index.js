@@ -4,6 +4,17 @@ import DummyCell from './src/Cells/DummyCell.js';
 const fieldSizeX = 10;
 const fieldSizeY = 10;
 const field = new Field(fieldSizeX, fieldSizeY);
+const fieldContainer = document.getElementById('field-container');
+const fieldElement = document.getElementById('field');
+const panelElement = document.getElementById('panel');
+const scaleDisplay = document.getElementById('scaleDisplay');
+
+let scaleFactor = 1;
+const minScaleFactor = 0.05;
+const maxScaleFactor = 3;
+const scaleStep = 0.01;
+
+let resizeInterval;
 
 for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
@@ -11,16 +22,14 @@ for (let x = 0; x < fieldSizeX; x++) {
     }
 }
 
-const fieldContainer = document.getElementById('field-container');
-const fieldElement = document.getElementById('field');
-const panelElement = document.getElementById('panel');
-
 function resizeCells() {
     const containerWidth = fieldContainer.clientWidth;
     const containerHeight = window.innerHeight - panelElement.offsetHeight;
     const cellWidth = containerWidth / fieldSizeX;
     const cellHeight = containerHeight / fieldSizeY;
-    const cellSize = Math.min(cellWidth, cellHeight);
+    const baseCellSize = Math.min(cellWidth, cellHeight);
+
+    const cellSize = baseCellSize * scaleFactor;
 
     fieldElement.style.width = `${cellSize * fieldSizeX}px`;
     fieldElement.style.height = `${cellSize * fieldSizeY}px`;
@@ -32,6 +41,8 @@ function resizeCells() {
         cell.style.width = `${cellSize}px`;
         cell.style.height = `${cellSize}px`;
     });
+
+    scaleDisplay.textContent = `Scale: ${Math.round(scaleFactor * 100)}%`;
 }
 
 while (fieldElement.firstChild) {
@@ -60,12 +71,49 @@ function handleCellClick(event) {
 }
 
 function handleButtonClick(event) {
-    alert('Welcome!');
+    if (event.target.id === 'buttonResetSize') {
+        scaleFactor = 1;
+        resizeCells();
+    } else {
+        alert('Welcome!');
+    }
+}
+
+function increaseSize() {
+    scaleFactor = Math.min(maxScaleFactor, scaleFactor + scaleStep);
+    resizeCells();
+}
+
+function decreaseSize() {
+    scaleFactor = Math.max(minScaleFactor, scaleFactor - scaleStep);
+    resizeCells();
+}
+
+function startIncreaseSizeTime() {
+    increaseSize();
+    resizeInterval = setInterval(increaseSize, 100);
+}
+
+function startDecreaseSizeTime() {
+    decreaseSize();
+    resizeInterval = setInterval(decreaseSize, 100);
+}
+
+function stopResize() {
+    clearInterval(resizeInterval);
 }
 
 document.getElementById('button1').addEventListener('click', handleButtonClick);
-document.getElementById('button2').addEventListener('click', handleButtonClick);
-document.getElementById('button3').addEventListener('click', handleButtonClick);
+
+document.getElementById('buttonIncreaseSize').addEventListener('mousedown', startIncreaseSizeTime);
+document.getElementById('buttonIncreaseSize').addEventListener('mouseup', stopResize);
+document.getElementById('buttonIncreaseSize').addEventListener('mouseleave', stopResize);
+
+document.getElementById('buttonDecreaseSize').addEventListener('mousedown', startDecreaseSizeTime);
+document.getElementById('buttonDecreaseSize').addEventListener('mouseup', stopResize);
+document.getElementById('buttonDecreaseSize').addEventListener('mouseleave', stopResize);
+
+document.getElementById('buttonResetSize').addEventListener('click', handleButtonClick);
 
 document.addEventListener('wheel', function(event) {
     if (event.ctrlKey) {
@@ -80,5 +128,6 @@ document.addEventListener('keydown', function(event) {
 });
 
 window.addEventListener('load', resizeCells);
+window.addEventListener('resize', resizeCells);
 
 resizeCells();
