@@ -67,7 +67,18 @@ document.getElementById('button1').addEventListener('click', handleButtonClick);
 document.getElementById('button2').addEventListener('click', handleButtonClick);
 document.getElementById('button3').addEventListener('click', handleButtonClick);
 
+document.addEventListener('wheel', function(event) {
+    if (event.ctrlKey) {
+        event.preventDefault();
+    }
+}, { passive: false });
+
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && (event.key === '+' || event.key === '=' || event.key === '-' || event.key === '0')) {
+        event.preventDefault();
+    }
+});
+
 window.addEventListener('load', resizeCells);
-window.addEventListener('resize', resizeCells);
 
 resizeCells();
