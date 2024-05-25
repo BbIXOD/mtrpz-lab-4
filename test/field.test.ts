@@ -1,5 +1,5 @@
-import Field from "../src/Field"
-import DummyCell from "../src/Cells/DummyCell"
+import Field from "../src/Field.js"
+import DummyCell from "../src/Cells/DummyCell.js"
 import { expect} from "chai"
 
 describe("Field", function () {
