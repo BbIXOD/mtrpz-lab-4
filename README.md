@@ -1,6 +1,6 @@
 ## Запуск проєкту і сервера
 
-> **NOTE:** Потрібна [Node.js](https://nodejs.org/en/download) щоб запустити проєкт та [Python](https://www.python.org/downloads/) для запуску HTTP сервера
+> **NOTE:** Потрібна [Node.js](https://nodejs.org/en/download) щоб запустити проєкт
 
 Для того, щоб запустити проєкт, потрібно:
 
@@ -24,15 +24,12 @@ npm install
 npm install -g typescript
 ```
 
-5. Написату таку команду:
+5. Скомпілювати Typescript в Javascript:
 ```
 tsc
 ```
 
-6. Запустити сервер:
-```
-python -m http.server
-```
+6. Запустити сервер (можна відкрити index.html у браузері)
 
 ## Запуск тестів
 
