@@ -2,5 +2,12 @@ import Cell from "../Cell";
 
 export default class DummyCell implements Cell {
     picture: string;
-    action(x: number, y: number): void {}
+
+    constructor(picture: string = "") {
+        this.picture = picture;
+    }
+
+    action(x: number, y: number): void {
+        alert(`Clicked cell at (${x}, ${y})!`);
+    }
 }
