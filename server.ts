@@ -42,9 +42,16 @@ const onRootRequest = (_req: http.IncomingMessage, res: http.ServerResponse) => 
 const requestFile = (req: http.IncomingMessage, res: http.ServerResponse) => {
   const url = req.url;
   if (!url) return;
+  const filename = "." + url;
 
   const ext = path.parse(url).ext;
   const contentType = mimeTypes[ext] || 'text/plain';
   res.setHeader('Content-Type', contentType);
-  fs.createReadStream("." + url).pipe(res);
+  if (!fs.existsSync(filename)) {
+    res.statusCode = 404;
+    console.log(`File not found: ${filename}`);
+    res.end('File not found');
+    return;
+  }
+  fs.createReadStream(filename).pipe(res);
 }
