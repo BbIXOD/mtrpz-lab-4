@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="./">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Window with Field and Panel</title>
-    <link rel="stylesheet" href="style.css?v=${Date.now()}">
+    <link rel="stylesheet" href="./public/style.css">
+    <script src="./dist/src/index.js" type="module"></script>
 </head>
 <body>
     <div id="field-container">
@@ -25,11 +27,5 @@
             <img src="../pictures/zoom_to_actual_size.png" alt="Zoom To Actual Size Icon">
         </button>
     </div>
-    <script type="module">
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = `index.js?v=${Date.now()}`;
-        document.head.appendChild(script);
-    </script>
 </body>
 </html>
