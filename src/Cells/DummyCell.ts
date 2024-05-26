@@ -1,4 +1,4 @@
-import { Cell } from "./Cell.js";
+import { Cell } from './Cell.js';
 
 export class DummyCell implements Cell {
     picture: string;
@@ -12,9 +12,9 @@ export class DummyCell implements Cell {
     ];
     currentIndex: number = 0;
 
-    constructor(picture: string = "") {
-        this.picture = picture;
-    }
+  constructor(picture = '') {
+    this.picture = picture;
+  }
 
     action(x: number, y: number): void {
         const cellElement = document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);

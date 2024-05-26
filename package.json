@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "run": "npm run build && node dist/server.js",
-    "test": "npm run build && mocha --recursive 'dist/test/**/*.js'"
+    "test": "npm run build && mocha --recursive 'dist/test/**/*.js'",
+    "lint": "eslint --ext .ts,.tsx ."
   },
   "keywords": [],
   "author": "",
@@ -16,11 +17,28 @@
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.6",
     "chai": "^5.1.1",
+    "eslint-config-standard-typescript-prettier": "^6.0.0",
     "html-server": "^0.1.1",
     "mocha": "^10.4.0",
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12"
-  }
+    "@types/node": "^20.12.12",
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "prettier": "^2.7.1"
+  },
+  "eslintConfig": {
+    "extends": ["standard-typescript-prettier"],
+    "parserOptions": { "project": "./tsconfig.json" }
+  },
+  "prettier": "eslint-config-standard-typescript-prettier/prettier"
 }
