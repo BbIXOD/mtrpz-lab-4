@@ -1,7 +1,5 @@
-import Cell from "./Cell"
-
-export default class Field {
-    Cells: Cell[][]
+export default class Field<T> {
+    Cells: T[][]
     sizeX: number
     sizeY: number
 
@@ -25,7 +23,7 @@ export default class Field {
     }
 
     getSymmetric(x: number, y: number, dx: number, dy: number) {
-        const result: Cell[] = [
+        const result: T[] = [
             this.getCell(x + dx, y + dy),
             this.getCell(x - dx, y - dy),
             this.getCell(x - dx, y + dy),
@@ -35,11 +33,7 @@ export default class Field {
         return result
     }
 
-    turn() {
-        this.iterate((x, y, cell) => cell?.action(x, y))
-    }
-
-    private iterate(callback: (x: number, y: number, cell: Cell) => void) {
+    public iterate(callback: (x: number, y: number, cell: T) => void) {
         for (let x = 0; x < this.sizeX; x++) {
             for (let y = 0; y < this.sizeY; y++) {
                 callback(x, y, this.getCell(x, y))
