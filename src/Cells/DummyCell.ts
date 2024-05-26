@@ -1,6 +1,6 @@
-import Cell from "../Cell.js";
+import { Cell } from "./Cell.js";
 
-export default class DummyCell implements Cell {
+export class DummyCell implements Cell {
     picture: string;
 
     constructor(picture: string = "") {
