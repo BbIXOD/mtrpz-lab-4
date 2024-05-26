@@ -19,12 +19,12 @@ cd ./mtrpz-lab-4.git
 npm install
 ```
 
-5. Скомпілювати Typescript в Javascript:
+4. Скомпілювати Typescript в Javascript:
 ```
 npm run bild
 ```
 
-6. Запустити сервер (можна відкрити index.html у браузері)
+5. Запустити сервер (можна відкрити index.html у браузері)
 
 ## Запуск тестів
 
