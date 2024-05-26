@@ -1,5 +1,5 @@
-import Field from './dist/src/Field.js';
-import DummyCell from './dist/src/Cells/DummyCell.js';
+import Field from '../dist/src/Field.js';
+import DummyCell from '../dist/src/Cells/DummyCell.js';
 
 const fieldSizeX = 10;
 const fieldSizeY = 10;
@@ -18,7 +18,7 @@ let resizeInterval;
 
 for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
-        field.Cells[x][y] = new DummyCell();
+        field.Cells[x][y] = new DummyCell("../pictures/default_cell.png");
     }
 }
 
@@ -42,6 +42,12 @@ function resizeCells() {
     cells.forEach(cell => {
         cell.style.width = `${cellSize}px`;
         cell.style.height = `${cellSize}px`;
+
+        const img = cell.querySelector('img');
+        if (img) {
+            img.style.width = `${cellSize}px`;
+            img.style.height = `${cellSize}px`;
+        }
     });
 
     scaleDisplay.textContent = `Scale: ${Math.round(scaleFactor * 100)}%`;
@@ -58,13 +64,22 @@ for (let x = 0; x < fieldSizeX; x++) {
         cellElement.dataset.x = x;
         cellElement.dataset.y = y;
         cellElement.addEventListener('click', handleCellClick);
+
+        const cell = field.getCell(x, y);
+        if (cell.picture) {
+            const img = document.createElement('img');
+            img.src = cell.picture;
+            img.alt = `Cell at (${x}, ${y})`;
+            cellElement.appendChild(img);
+        }
+
         fieldElement.appendChild(cellElement);
     }
 }
 
 function handleCellClick(event) {
-    const x = event.target.dataset.x;
-    const y = event.target.dataset.y;
+    const x = event.target.closest('.cell').dataset.x;
+    const y = event.target.closest('.cell').dataset.y;
     const cell = field.getCell(Number(x), Number(y));
 
     if (cell) {
@@ -72,13 +87,8 @@ function handleCellClick(event) {
     }
 }
 
-function handleButtonClick(event) {
-    if (event.target.id === 'buttonResetSize') {
-        scaleFactor = 1;
-        resizeCells();
-    } else {
-        alert('Welcome!');
-    }
+function handleButtonClick() {
+    alert('Welcome!');
 }
 
 function increaseSize() {
@@ -88,6 +98,11 @@ function increaseSize() {
 
 function decreaseSize() {
     scaleFactor = Math.max(minScaleFactor, scaleFactor - scaleStep);
+    resizeCells();
+}
+
+function makeActualSize() {
+    scaleFactor = 1;
     resizeCells();
 }
 
@@ -107,15 +122,15 @@ function stopResize() {
 
 document.getElementById('button1').addEventListener('click', handleButtonClick);
 
-document.getElementById('buttonIncreaseSize').addEventListener('mousedown', startIncreaseSizeTime);
-document.getElementById('buttonIncreaseSize').addEventListener('mouseup', stopResize);
-document.getElementById('buttonIncreaseSize').addEventListener('mouseleave', stopResize);
+document.getElementById('buttonZoomIn').addEventListener('mousedown', startIncreaseSizeTime);
+document.getElementById('buttonZoomIn').addEventListener('mouseup', stopResize);
+document.getElementById('buttonZoomIn').addEventListener('mouseleave', stopResize);
 
-document.getElementById('buttonDecreaseSize').addEventListener('mousedown', startDecreaseSizeTime);
-document.getElementById('buttonDecreaseSize').addEventListener('mouseup', stopResize);
-document.getElementById('buttonDecreaseSize').addEventListener('mouseleave', stopResize);
+document.getElementById('buttonZoomOut').addEventListener('mousedown', startDecreaseSizeTime);
+document.getElementById('buttonZoomOut').addEventListener('mouseup', stopResize);
+document.getElementById('buttonZoomOut').addEventListener('mouseleave', stopResize);
 
-document.getElementById('buttonResetSize').addEventListener('click', handleButtonClick);
+document.getElementById('buttonToActualSize').addEventListener('click', makeActualSize);
 
 document.addEventListener('wheel', function(event) {
     if (event.ctrlKey) {
