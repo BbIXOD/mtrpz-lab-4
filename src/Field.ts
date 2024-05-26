@@ -1,3 +1,4 @@
+
 export default class Field<T> {
     Cells: T[][]
     sizeX: number
