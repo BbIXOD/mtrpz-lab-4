@@ -1,5 +1,5 @@
-import Field from './dist/src/Field.js';
-import DummyCell from './dist/src/Cells/DummyCell.js';
+import Field from '../dist/src/Field.js';
+import DummyCell from '../dist/src/Cells/DummyCell.js';
 
 const fieldSizeX = 10;
 const fieldSizeY = 10;
@@ -107,15 +107,15 @@ function stopResize() {
 
 document.getElementById('button1').addEventListener('click', handleButtonClick);
 
-document.getElementById('buttonIncreaseSize').addEventListener('mousedown', startIncreaseSizeTime);
-document.getElementById('buttonIncreaseSize').addEventListener('mouseup', stopResize);
-document.getElementById('buttonIncreaseSize').addEventListener('mouseleave', stopResize);
+document.getElementById('buttonZoomIn').addEventListener('mousedown', startIncreaseSizeTime);
+document.getElementById('buttonZoomIn').addEventListener('mouseup', stopResize);
+document.getElementById('buttonZoomIn').addEventListener('mouseleave', stopResize);
 
-document.getElementById('buttonDecreaseSize').addEventListener('mousedown', startDecreaseSizeTime);
-document.getElementById('buttonDecreaseSize').addEventListener('mouseup', stopResize);
-document.getElementById('buttonDecreaseSize').addEventListener('mouseleave', stopResize);
+document.getElementById('buttonZoomOut').addEventListener('mousedown', startDecreaseSizeTime);
+document.getElementById('buttonZoomOut').addEventListener('mouseup', stopResize);
+document.getElementById('buttonZoomOut').addEventListener('mouseleave', stopResize);
 
-document.getElementById('buttonResetSize').addEventListener('click', handleButtonClick);
+document.getElementById('buttonToActualSize').addEventListener('click', handleButtonClick);
 
 document.addEventListener('wheel', function(event) {
     if (event.ctrlKey) {
