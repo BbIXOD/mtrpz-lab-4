@@ -7,7 +7,7 @@
     "build": "tsc",
     "run": "npm run build && node dist/server.js",
     "test": "npm run build && mocha --recursive 'dist/test/**/*.js'",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx . --fix"
   },
   "keywords": [],
   "author": "",
