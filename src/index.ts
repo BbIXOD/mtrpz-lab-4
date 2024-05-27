@@ -102,9 +102,9 @@ function handleCellClick(event: MouseEvent) {
 }
 
 function makeNextMove() {
-    alert('You made the next move!\nThat\'s it for now');
-    moveCount = ++moveCount;
-    moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
+  alert("You made the next move!\nThat's it for now");
+  moveCount = ++moveCount;
+  moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
 }
 
 function increaseSize() {
@@ -137,10 +137,12 @@ function stopResize() {
 }
 
 function handleButtonClick() {
-    alert('Welcome!');
+  alert('Welcome!');
 }
 
-document.getElementById('buttonNextMove')!.addEventListener('click', makeNextMove);
+document
+  .getElementById('buttonNextMove')!
+  .addEventListener('click', makeNextMove);
 
 document
   .getElementById('buttonZoomIn')!
@@ -162,9 +164,13 @@ document
   .getElementById('buttonZoomOut')!
   .addEventListener('mouseleave', stopResize);
 
-document.getElementById('buttonToActualSize')!.addEventListener('click', makeActualSize);
+document
+  .getElementById('buttonToActualSize')!
+  .addEventListener('click', makeActualSize);
 
-document.getElementById('button1')!.addEventListener('click', handleButtonClick);
+document
+  .getElementById('button1')!
+  .addEventListener('click', handleButtonClick);
 
 document.addEventListener(
   'wheel',
