@@ -24,6 +24,14 @@ body, html {
     left: 1vh;
 }
 
+#moveDisplay {
+    color: black;
+    font-size: 4vh;
+    position: absolute;
+    top: 7vh;
+    left: 1vh;
+}
+
 #field {
     display: grid;
     width: 60%;

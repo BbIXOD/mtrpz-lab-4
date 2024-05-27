@@ -8,6 +8,7 @@ const fieldContainer = document.getElementById('field-container');
 const fieldElement = document.getElementById('field');
 const panelElement = document.getElementById('panel');
 const scaleDisplay = document.getElementById('scaleDisplay');
+const moveDisplay = document.getElementById('moveDisplay');
 
 if (!fieldContainer || !fieldElement || !panelElement || !scaleDisplay) {
     throw new Error('Failed to get elements');
@@ -17,6 +18,8 @@ let scaleFactor = 1;
 const minScaleFactor = 0.05;
 const maxScaleFactor = 3;
 const scaleStep = 0.01;
+
+let moveCount = 0;
 
 let resizeInterval: NodeJS.Timeout;
 
@@ -98,8 +101,10 @@ function handleCellClick(event: MouseEvent) {
     }
 }
 
-function handleButtonClick() {
-    alert('Welcome!');
+function makeNextMove() {
+    alert('You made the next move!\nThat\'s it for now');
+    moveCount = ++moveCount;
+    moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
 }
 
 function increaseSize() {
@@ -131,7 +136,11 @@ function stopResize() {
     clearInterval(resizeInterval);
 }
 
-document.getElementById('button1')!.addEventListener('click', handleButtonClick);
+function handleButtonClick() {
+    alert('Welcome!');
+}
+
+document.getElementById('buttonNextMove')!.addEventListener('click', makeNextMove);
 
 document.getElementById('buttonZoomIn')!.addEventListener('mousedown', startIncreaseSizeTime);
 document.getElementById('buttonZoomIn')!.addEventListener('mouseup', stopResize);
@@ -142,6 +151,8 @@ document.getElementById('buttonZoomOut')!.addEventListener('mouseup', stopResize
 document.getElementById('buttonZoomOut')!.addEventListener('mouseleave', stopResize);
 
 document.getElementById('buttonToActualSize')!.addEventListener('click', makeActualSize);
+
+document.getElementById('button1')!.addEventListener('click', handleButtonClick);
 
 document.addEventListener('wheel', function(event) {
     if (event.ctrlKey) {
