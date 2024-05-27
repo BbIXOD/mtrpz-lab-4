@@ -20,11 +20,14 @@ export class DummyCell implements Cell {
         const cellElement = document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
         if (cellElement) {
             const imageUrl = this.images[this.currentIndex];
-    
-            const img = document.createElement('img');
+
+            let img = cellElement.querySelector('img');
+            if (!img) {
+                img = document.createElement('img');
+                cellElement.appendChild(img);
+            }
+
             img.src = imageUrl;
-            cellElement.innerHTML = '';
-            cellElement.appendChild(img);
 
             this.currentIndex = (this.currentIndex + 1) % this.images.length;
         }
