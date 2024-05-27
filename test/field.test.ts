@@ -1,6 +1,6 @@
 import Field from "../src/Field.js"
-import DummyCell from "../src/Cells/DummyCell.js"
-import { expect} from "chai"
+import { DummyCell } from "../src/Cells/Cells.js"
+import { expect } from "chai"
 
 describe("Field", function () {
     it("should create field", function () {

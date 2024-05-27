@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "run": "npm run build && node dist/server.js",
     "test": "npm run build && mocha --recursive 'dist/test/**/*.js'"
   },
   "keywords": [],
@@ -15,7 +16,11 @@
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.6",
     "chai": "^5.1.1",
+    "html-server": "^0.1.1",
     "mocha": "^10.4.0",
     "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12"
   }
 }

@@ -1,20 +1,24 @@
-import Field from '../dist/src/Field.js';
-import DummyCell from '../dist/src/Cells/DummyCell.js';
+import Field from './Field.js';
+import { Cell, DummyCell } from './Cells/Cells.js';
 
 const fieldSizeX = 10;
 const fieldSizeY = 10;
-const field = new Field(fieldSizeX, fieldSizeY);
+const field = new Field<Cell>(fieldSizeX, fieldSizeY);
 const fieldContainer = document.getElementById('field-container');
 const fieldElement = document.getElementById('field');
 const panelElement = document.getElementById('panel');
 const scaleDisplay = document.getElementById('scaleDisplay');
+
+if (!fieldContainer || !fieldElement || !panelElement || !scaleDisplay) {
+    throw new Error('Failed to get elements');
+}
 
 let scaleFactor = 1;
 const minScaleFactor = 0.05;
 const maxScaleFactor = 3;
 const scaleStep = 0.01;
 
-let resizeInterval;
+let resizeInterval: NodeJS.Timeout;
 
 for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
@@ -23,6 +27,7 @@ for (let x = 0; x < fieldSizeX; x++) {
 }
 
 function resizeCells() {
+    if (!fieldContainer || !fieldElement || !panelElement) return;
     const containerWidth = fieldContainer.clientWidth;
     const containerHeight = window.innerHeight - panelElement.offsetHeight;
 
@@ -40,8 +45,9 @@ function resizeCells() {
 
     const cells = document.querySelectorAll('.cell');
     cells.forEach(cell => {
-        cell.style.width = `${cellSize}px`;
-        cell.style.height = `${cellSize}px`;
+        const element = cell as HTMLElement;
+        element.style.width = `${cellSize}px`;
+        element.style.height = `${cellSize}px`;
 
         const img = cell.querySelector('img');
         if (img) {
@@ -50,7 +56,7 @@ function resizeCells() {
         }
     });
 
-    scaleDisplay.textContent = `Scale: ${Math.round(scaleFactor * 100)}%`;
+    scaleDisplay!.textContent = `Scale: ${Math.round(scaleFactor * 100)}%`;
 }
 
 while (fieldElement.firstChild) {
@@ -61,8 +67,8 @@ for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
         const cellElement = document.createElement('div');
         cellElement.className = 'cell';
-        cellElement.dataset.x = x;
-        cellElement.dataset.y = y;
+        cellElement.dataset.x = x.toString();
+        cellElement.dataset.y = y.toString();
         cellElement.addEventListener('click', handleCellClick);
 
         const cell = field.getCell(x, y);
@@ -77,13 +83,18 @@ for (let x = 0; x < fieldSizeX; x++) {
     }
 }
 
-function handleCellClick(event) {
-    const x = event.target.closest('.cell').dataset.x;
-    const y = event.target.closest('.cell').dataset.y;
+function handleCellClick(event: MouseEvent) {
+    if (!event.target) return;
+    const target = event.target as HTMLElement;
+    const closestCell = target.closest('.cell') as HTMLElement;
+    if (!closestCell) return;
+
+    const x = closestCell.dataset.x;
+    const y = closestCell.dataset.y;
     const cell = field.getCell(Number(x), Number(y));
 
     if (cell) {
-        cell.action(x, y);
+        cell.action(Number(x), Number(y));
     }
 }
 
@@ -120,17 +131,17 @@ function stopResize() {
     clearInterval(resizeInterval);
 }
 
-document.getElementById('button1').addEventListener('click', handleButtonClick);
+document.getElementById('button1')!.addEventListener('click', handleButtonClick);
 
-document.getElementById('buttonZoomIn').addEventListener('mousedown', startIncreaseSizeTime);
-document.getElementById('buttonZoomIn').addEventListener('mouseup', stopResize);
-document.getElementById('buttonZoomIn').addEventListener('mouseleave', stopResize);
+document.getElementById('buttonZoomIn')!.addEventListener('mousedown', startIncreaseSizeTime);
+document.getElementById('buttonZoomIn')!.addEventListener('mouseup', stopResize);
+document.getElementById('buttonZoomIn')!.addEventListener('mouseleave', stopResize);
 
-document.getElementById('buttonZoomOut').addEventListener('mousedown', startDecreaseSizeTime);
-document.getElementById('buttonZoomOut').addEventListener('mouseup', stopResize);
-document.getElementById('buttonZoomOut').addEventListener('mouseleave', stopResize);
+document.getElementById('buttonZoomOut')!.addEventListener('mousedown', startDecreaseSizeTime);
+document.getElementById('buttonZoomOut')!.addEventListener('mouseup', stopResize);
+document.getElementById('buttonZoomOut')!.addEventListener('mouseleave', stopResize);
 
-document.getElementById('buttonToActualSize').addEventListener('click', makeActualSize);
+document.getElementById('buttonToActualSize')!.addEventListener('click', makeActualSize);
 
 document.addEventListener('wheel', function(event) {
     if (event.ctrlKey) {
