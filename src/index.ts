@@ -1,16 +1,20 @@
 import Field from './Field.js';
 import { Cell, DummyCell } from './Cells/Cells.js';
 
-const fieldSizeX = 10;
-const fieldSizeY = 10;
-const field = new Field<Cell>(fieldSizeX, fieldSizeY);
+let fieldSizeX = 10;
+let fieldSizeY = fieldSizeX;
+let field = new Field<Cell>(fieldSizeX, fieldSizeY);
 const fieldContainer = document.getElementById('field-container');
 const fieldElement = document.getElementById('field');
 const panelElement = document.getElementById('panel');
 const scaleDisplay = document.getElementById('scaleDisplay');
 const moveDisplay = document.getElementById('moveDisplay');
+const fieldSizeInput = document.getElementById('fieldSizeInput') as HTMLInputElement;
+const sizeModal = document.getElementById('sizeModal') as HTMLElement;
+const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
+const closeButton = document.querySelector('.close') as HTMLElement;
 
-if (!fieldContainer || !fieldElement || !panelElement || !scaleDisplay) {
+if (!fieldContainer || !fieldElement || !panelElement || !scaleDisplay || !moveDisplay || !fieldSizeInput || !sizeModal || !modalOkButton || !closeButton) {
   throw new Error('Failed to get elements');
 }
 
@@ -23,9 +27,11 @@ let moveCount = 0;
 
 let resizeInterval: NodeJS.Timeout;
 
-for (let x = 0; x < fieldSizeX; x++) {
-  for (let y = 0; y < fieldSizeY; y++) {
-    field.Cells[x][y] = new DummyCell('../pictures/default_cell.png');
+function initializeField() {
+  for (let x = 0; x < fieldSizeX; x++) {
+    for (let y = 0; y < fieldSizeY; y++) {
+      field.Cells[x][y] = new DummyCell('../pictures/default_cell.png');
+    }
   }
 }
 
@@ -62,27 +68,29 @@ function resizeCells() {
   scaleDisplay!.textContent = `Scale: ${Math.round(scaleFactor * 100)}%`;
 }
 
-while (fieldElement.firstChild) {
-  fieldElement.removeChild(fieldElement.firstChild);
-}
+function createField() {
+  while (fieldElement!.firstChild) {
+    fieldElement!.removeChild(fieldElement!.firstChild);
+  }
 
-for (let x = 0; x < fieldSizeX; x++) {
-  for (let y = 0; y < fieldSizeY; y++) {
-    const cellElement = document.createElement('div');
-    cellElement.className = 'cell';
-    cellElement.dataset.x = x.toString();
-    cellElement.dataset.y = y.toString();
-    cellElement.addEventListener('click', handleCellClick);
+  for (let x = 0; x < fieldSizeX; x++) {
+    for (let y = 0; y < fieldSizeY; y++) {
+      const cellElement = document.createElement('div');
+      cellElement.className = 'cell';
+      cellElement.dataset.x = x.toString();
+      cellElement.dataset.y = y.toString();
+      cellElement.addEventListener('click', handleCellClick);
 
-    const cell = field.getCell(x, y);
-    if (cell.picture) {
-      const img = document.createElement('img');
-      img.src = cell.picture;
-      img.alt = `Cell at (${x}, ${y})`;
-      cellElement.appendChild(img);
+      const cell = field.getCell(x, y);
+      if (cell.picture) {
+        const img = document.createElement('img');
+        img.src = cell.picture;
+        img.alt = `Cell at (${x}, ${y})`;
+        cellElement.appendChild(img);
+      }
+
+      fieldElement!.appendChild(cellElement);
     }
-
-    fieldElement.appendChild(cellElement);
   }
 }
 
@@ -140,6 +148,53 @@ function handleButtonClick() {
   alert('Welcome!');
 }
 
+function handleCreateField() {
+  sizeModal.style.display = 'block';
+}
+
+function handleModalOk() {
+  const newSize = parseInt(fieldSizeInput.value);
+  const errorText = document.getElementById('errorText') as HTMLParagraphElement;
+
+  if (newSize >= 10 && newSize <= 100) {
+    fieldSizeX = newSize;
+    fieldSizeY = newSize;
+    field = new Field<Cell>(fieldSizeX, fieldSizeY);
+    initializeField();
+    createField();
+    resizeCells();
+    sizeModal.style.display = 'none';
+    errorText.style.display = 'none';
+  } else {
+    errorText.textContent = 'Please enter a number between 10 and 100.';
+    errorText.style.display = 'block';
+  }
+}
+
+function handleCloseModal() {
+  sizeModal.style.display = 'none';
+}
+
+function handleRandomizeField() {
+  const newSize = Math.floor(Math.random() * (100 - 10 + 1)) + 10;
+  fieldSizeX = newSize;
+  fieldSizeY = newSize;
+  field = new Field<Cell>(fieldSizeX, fieldSizeY);
+  initializeField();
+  createField();
+  resizeCells();
+}
+
+function handleResetField() {
+  initializeField();
+  createField();
+  resizeCells();
+}
+
+document.getElementById('buttonCreateField')!.addEventListener('click', handleCreateField);
+modalOkButton.addEventListener('click', handleModalOk);
+closeButton.addEventListener('click', handleCloseModal);
+
 document
   .getElementById('buttonNextMove')!
   .addEventListener('click', makeNextMove);
@@ -169,8 +224,11 @@ document
   .addEventListener('click', makeActualSize);
 
 document
-  .getElementById('button1')!
-  .addEventListener('click', handleButtonClick);
+  .getElementById('buttonRandomizeField')!
+  .addEventListener('click', handleRandomizeField);
+document 
+  .getElementById('buttonResetField')!
+  .addEventListener('click', handleResetField);
 
 document.addEventListener(
   'wheel',
@@ -194,7 +252,11 @@ document.addEventListener('keydown', function (event) {
   }
 });
 
-window.addEventListener('load', resizeCells);
+window.addEventListener('load', () => {
+  initializeField();
+  createField();
+  resizeCells();
+});
 window.addEventListener('resize', resizeCells);
 
 resizeCells();
