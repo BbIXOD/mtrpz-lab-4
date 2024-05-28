@@ -1,4 +1,4 @@
-import Field from "../Field";
+import Field from '../Field';
 
 export interface Cell {
   picture: string;
