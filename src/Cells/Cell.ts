@@ -1,5 +1,5 @@
 export interface Cell {
-    picture: string 
+  picture: string;
 
-    action(x: number, y: number): void
+  action(x: number, y: number): void;
 }
