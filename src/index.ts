@@ -154,6 +154,8 @@ function handleCreateField() {
 
 function handleModalOk() {
   const newSize = parseInt(fieldSizeInput.value);
+  const errorText = document.getElementById('errorText') as HTMLParagraphElement;
+
   if (newSize >= 10 && newSize <= 100) {
     fieldSizeX = newSize;
     fieldSizeY = newSize;
@@ -162,8 +164,10 @@ function handleModalOk() {
     createField();
     resizeCells();
     sizeModal.style.display = 'none';
+    errorText.style.display = 'none';
   } else {
-    alert('Please enter a number between 10 and 100.');
+    errorText.textContent = 'Please enter a number between 10 and 100.';
+    errorText.style.display = 'block';
   }
 }
 

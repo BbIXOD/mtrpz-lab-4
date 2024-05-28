@@ -125,3 +125,13 @@ button img {
     cursor: pointer;
     align-items: center;
 }
+
+.error-text {
+    color: red;
+    background-color: #ffebee;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 3vh;
+    display: none;
+}
