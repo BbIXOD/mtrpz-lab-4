@@ -171,6 +171,22 @@ function handleCloseModal() {
   sizeModal.style.display = 'none';
 }
 
+function handleRandomizeField() {
+  const newSize = Math.floor(Math.random() * (100 - 10 + 1)) + 10;
+  fieldSizeX = newSize;
+  fieldSizeY = newSize;
+  field = new Field<Cell>(fieldSizeX, fieldSizeY);
+  initializeField();
+  createField();
+  resizeCells();
+}
+
+function handleResetField() {
+  initializeField();
+  createField();
+  resizeCells();
+}
+
 document.getElementById('buttonCreateField')!.addEventListener('click', handleCreateField);
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);
@@ -204,8 +220,11 @@ document
   .addEventListener('click', makeActualSize);
 
 document
-  .getElementById('button1')!
-  .addEventListener('click', handleButtonClick);
+  .getElementById('buttonRandomizeField')!
+  .addEventListener('click', handleRandomizeField);
+document 
+  .getElementById('buttonResetField')!
+  .addEventListener('click', handleResetField);
 
 document.addEventListener(
   'wheel',
