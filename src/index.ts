@@ -208,6 +208,12 @@ function handleResetField() {
 document
   .getElementById('buttonCreateField')!
   .addEventListener('click', handleCreateField);
+document
+  .getElementById('closeModal')!
+  .addEventListener('click', function() {
+    const errorText = document.getElementById('errorText') as HTMLParagraphElement;
+    errorText.style.display = 'none';
+  });
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);
 
