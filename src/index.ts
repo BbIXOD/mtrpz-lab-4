@@ -9,12 +9,24 @@ const fieldElement = document.getElementById('field');
 const panelElement = document.getElementById('panel');
 const scaleDisplay = document.getElementById('scaleDisplay');
 const moveDisplay = document.getElementById('moveDisplay');
-const fieldSizeInput = document.getElementById('fieldSizeInput') as HTMLInputElement;
+const fieldSizeInput = document.getElementById(
+  'fieldSizeInput',
+) as HTMLInputElement;
 const sizeModal = document.getElementById('sizeModal') as HTMLElement;
 const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
 const closeButton = document.querySelector('.close') as HTMLElement;
 
-if (!fieldContainer || !fieldElement || !panelElement || !scaleDisplay || !moveDisplay || !fieldSizeInput || !sizeModal || !modalOkButton || !closeButton) {
+if (
+  !fieldContainer ||
+  !fieldElement ||
+  !panelElement ||
+  !scaleDisplay ||
+  !moveDisplay ||
+  !fieldSizeInput ||
+  !sizeModal ||
+  !modalOkButton ||
+  !closeButton
+) {
   throw new Error('Failed to get elements');
 }
 
@@ -30,7 +42,7 @@ let resizeInterval: NodeJS.Timeout;
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
-      field.Cells[x][y] = new DummyCell('../pictures/default_cell.png');
+      field.Cells[x][y] = new DummyCell(field);
     }
   }
 }
@@ -154,7 +166,9 @@ function handleCreateField() {
 
 function handleModalOk() {
   const newSize = parseInt(fieldSizeInput.value);
-  const errorText = document.getElementById('errorText') as HTMLParagraphElement;
+  const errorText = document.getElementById(
+    'errorText',
+  ) as HTMLParagraphElement;
 
   if (newSize >= 10 && newSize <= 100) {
     fieldSizeX = newSize;
@@ -191,7 +205,9 @@ function handleResetField() {
   resizeCells();
 }
 
-document.getElementById('buttonCreateField')!.addEventListener('click', handleCreateField);
+document
+  .getElementById('buttonCreateField')!
+  .addEventListener('click', handleCreateField);
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);
 
@@ -226,7 +242,7 @@ document
 document
   .getElementById('buttonRandomizeField')!
   .addEventListener('click', handleRandomizeField);
-document 
+document
   .getElementById('buttonResetField')!
   .addEventListener('click', handleResetField);
 

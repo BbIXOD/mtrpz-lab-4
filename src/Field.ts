@@ -14,12 +14,22 @@ export default class Field<T> {
     this.sizeY = y;
   }
 
-  getCell(x: number, y: number) {
+  private format(x: number, y: number) {
     x %= this.sizeX;
     y %= this.sizeY;
     x = x < 0 ? x + this.sizeX : x;
     y = y < 0 ? y + this.sizeY : y;
+    return [x, y];
+  }
+
+  getCell(x: number, y: number) {
+    [x, y] = this.format(x, y);
     return this.Cells[x][y];
+  }
+
+  setCell(x: number, y: number, cell: T) {
+    [x, y] = this.format(x, y);
+    this.Cells[x][y] = cell;
   }
 
   getSymmetric(x: number, y: number, dx: number, dy: number) {

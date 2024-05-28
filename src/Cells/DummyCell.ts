@@ -1,7 +1,9 @@
+import Field from '../Field.js';
 import { Cell } from './Cell.js';
 
 export class DummyCell implements Cell {
   picture: string;
+  field: Field<Cell>;
 
   images: string[] = [
     '../pictures/arrow_up.png',
@@ -13,8 +15,9 @@ export class DummyCell implements Cell {
 
   currentIndex = 0;
 
-  constructor(picture = '') {
+  constructor(field: Field<Cell>, picture = '../pictures/default_cell.png') {
     this.picture = picture;
+    this.field = field;
   }
 
   action(x: number, y: number): void {
