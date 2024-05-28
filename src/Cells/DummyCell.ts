@@ -15,7 +15,7 @@ export class DummyCell implements Cell {
 
   currentIndex = 0;
 
-  constructor(picture = '../pictures/default_cell.png', field: Field<Cell>) {
+  constructor(field: Field<Cell>, picture = '../pictures/default_cell.png') {
     this.picture = picture;
     this.field = field;
   }

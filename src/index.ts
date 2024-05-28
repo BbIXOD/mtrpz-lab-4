@@ -42,7 +42,7 @@ let resizeInterval: NodeJS.Timeout;
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
-      field.Cells[x][y] = new DummyCell('../pictures/default_cell.png', field);
+      field.Cells[x][y] = new DummyCell(field);
     }
   }
 }
