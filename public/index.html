@@ -15,6 +15,9 @@
         <div id="field"></div>
     </div>
     <div id="panel">
+        <button id="buttonCreateField", title="Creates a field with number that you gave it">
+            Create a field
+        </button>
         <button id="buttonNextMove", title="Make the next move of the people">
             <img src="../pictures/next_move.png" alt="Next Move Icon">
         </button>
@@ -31,5 +34,14 @@
             Button 1
         </button>
     </div>
+    <div id="sizeModal", class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Enter field size (10-100):</p>
+            <input type="number", id="fieldSizeInput", min="10", max="100">
+            <button id="modalOkButton">OK</button>
+        </div>
+    </div>
+    <script src="./dist/src/index.js" type="module"></script>
 </body>
 </html>
