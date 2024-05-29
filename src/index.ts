@@ -42,7 +42,7 @@ let cellsArray: HTMLElement[] = [];
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
-      field.Cells[x][y] = new DummyCell(field);
+      new DummyCell(field, x, y);
     }
   }
 }
@@ -119,7 +119,7 @@ function handleCellClick(event: MouseEvent) {
   const cell = field.getCell(Number(x), Number(y));
 
   if (cell) {
-    cell.action(Number(x), Number(y));
+    cell.action();
   }
 }
 
@@ -127,7 +127,7 @@ function performActions() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
       const cell = field.getCell(x, y);
-      cell.action(x, y);
+      cell.action();
     }
   }
   updateFieldImages();

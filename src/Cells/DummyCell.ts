@@ -4,6 +4,7 @@ import { Cell } from './Cell.js';
 export class DummyCell implements Cell {
   picture: string;
   field: Field<Cell>;
+  position: { x: number; y: number; };
 
   images: string[] = [
     '../pictures/arrow_up.png',
@@ -15,14 +16,16 @@ export class DummyCell implements Cell {
 
   currentIndex = 0;
 
-  constructor(field: Field<Cell>, picture = '../pictures/default_cell.png') {
+  constructor(field: Field<Cell>, x = 0, y = 0, picture = '../pictures/default_cell.png') {
     this.picture = picture;
     this.field = field;
+    this.position = { x, y };
+    field.setCell(x, y, this);
   }
 
-  action(x: number, y: number): void {
+  action(): void {
     const cellElement = document.querySelector(
-      `.cell[data-x="${x}"][data-y="${y}"]`,
+      `.cell[data-x="${this.position.x}"][data-y="${this.position.y}"]`,
     );
     if (cellElement) {
       const imageUrl = this.images[this.currentIndex];

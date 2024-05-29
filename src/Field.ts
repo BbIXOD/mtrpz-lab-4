@@ -1,7 +1,9 @@
+import Vector from "./Vector";
+
 export default class Field<T> {
-  Cells: T[][];
-  sizeX: number;
-  sizeY: number;
+  private readonly Cells: T[][];
+  private readonly sizeX: number;
+  private readonly sizeY: number;
 
   constructor(x: number, y: number) {
     this.Cells = new Array(x);
@@ -27,9 +29,17 @@ export default class Field<T> {
     return this.Cells[x][y];
   }
 
+  getCellV(vector: Vector) {
+    return this.getCell(vector.x, vector.y);
+  }
+
   setCell(x: number, y: number, cell: T) {
     [x, y] = this.format(x, y);
     this.Cells[x][y] = cell;
+  }
+
+  setCellV(vector: Vector, cell: T) {
+    this.setCell(vector.x, vector.y, cell);
   }
 
   getSymmetric(x: number, y: number, dx: number, dy: number) {

@@ -1,31 +1,41 @@
 import Field from '../Field.js';
+import { ArrowCell } from './ArrowCell.js';
 import { Cell } from './Cell.js';
 import { DummyCell } from './DummyCell.js';
+import { MovingCell } from './MovingCell.js';
 
-export class HomeCell implements Cell {
-  picture = '../pictures/default_cell.png'; // TODO: add picture
-  field: Field<Cell>;
-  vector: { x: number; y: number } = { x: 1, y: 0 };
+export class Human extends MovingCell {
+  picture = '../pictures/human.png';
   hunger = 0;
 
-  constructor(field: Field<Cell>) {
-    this.field = field;
+  constructor(field: Field<Cell>, x: number, y: number) {
+    super(field, x, y);
+
+    this.actions.set('ArrowCell', this.walkOnArrow.bind(this));
   }
 
-  action(x: number, y: number): void {
-    const newPos = { x: x + this.vector.x, y: y + this.vector.y };
-    const cell = this.field.getCell(newPos.x, newPos.y);
-    const type = cell.constructor;
+  action(): void {
+      this.hunger++;
+      if (this.hunger > 10) {
+          this.field.setCellV(this.position, new DummyCell(this.field));
+          return;
+      }
+      super.action();
+  }
 
-    switch (type) {
-      case DummyCell: {
-        this.field.setCell(newPos.x, newPos.y, new HomeCell(this.field));
-        break;
-      }
-      default: {
-        console.log('Unknown cell type: ', type);
-        break;
-      }
-    }
+  private walkOnArrow(arrow: Cell) {
+    this.walkOnTile();
+    const arrowCell = arrow as ArrowCell;
+    this.moveVector = arrowCell.moveVector;
+  }
+
+  private walkOnTile() {
+    this.field.setCellV(this.position, new DummyCell(this.field));
+    this.position = this.position.add(this.moveVector);
+    this.field.setCellV(this.position, this);
+  }
+
+  protected onUnknownCell(): void {
+      this.walkOnTile();
   }
 }
