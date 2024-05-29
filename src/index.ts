@@ -9,9 +9,7 @@ const fieldElement = document.getElementById('field');
 const panelElement = document.getElementById('panel');
 const scaleDisplay = document.getElementById('scaleDisplay');
 const moveDisplay = document.getElementById('moveDisplay');
-const fieldSizeInput = document.getElementById(
-  'fieldSizeInput',
-) as HTMLInputElement;
+const fieldSizeInput = document.getElementById('fieldSizeInput') as HTMLInputElement;
 const sizeModal = document.getElementById('sizeModal') as HTMLElement;
 const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
 const closeButton = document.querySelector('.close') as HTMLElement;
@@ -39,6 +37,8 @@ let moveCount = 0;
 
 let resizeInterval: NodeJS.Timeout;
 
+let cellsArray: HTMLElement[] = [];
+
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
@@ -64,13 +64,11 @@ function resizeCells() {
   fieldElement.style.gridTemplateColumns = `repeat(${fieldSizeX}, ${cellSize}px)`;
   fieldElement.style.gridTemplateRows = `repeat(${fieldSizeY}, ${cellSize}px)`;
 
-  const cells = document.querySelectorAll('.cell');
-  cells.forEach((cell) => {
-    const element = cell as HTMLElement;
+  cellsArray.forEach((element) => {
     element.style.width = `${cellSize}px`;
     element.style.height = `${cellSize}px`;
 
-    const img = cell.querySelector('img');
+    const img = element.querySelector('img');
     if (img) {
       img.style.width = `${cellSize}px`;
       img.style.height = `${cellSize}px`;
@@ -81,6 +79,8 @@ function resizeCells() {
 }
 
 function createField() {
+  cellsArray = [];
+
   while (fieldElement!.firstChild) {
     fieldElement!.removeChild(fieldElement!.firstChild);
   }
@@ -100,6 +100,8 @@ function createField() {
         img.alt = `Cell at (${x}, ${y})`;
         cellElement.appendChild(img);
       }
+
+      cellsArray.push(cellElement);
 
       fieldElement!.appendChild(cellElement);
     }
@@ -121,9 +123,36 @@ function handleCellClick(event: MouseEvent) {
   }
 }
 
+function performActions() {
+  for (let x = 0; x < fieldSizeX; x++) {
+    for (let y = 0; y < fieldSizeY; y++) {
+      const cell = field.getCell(x, y);
+      cell.action(x, y);
+    }
+  }
+  updateFieldImages();
+}
+
+function updateFieldImages() {
+  cellsArray.forEach((element) => {
+    const x = parseInt(element.dataset.x || '0');
+    const y = parseInt(element.dataset.y || '0');
+    const fieldCell = field.getCell(x, y);
+
+    if (fieldCell.picture) {
+      let img = element.querySelector('img');
+      if (!img) {
+        img = document.createElement('img');
+        element.appendChild(img);
+      }
+      img.src = fieldCell.picture;
+    }
+  });
+}
+
 function makeNextMove() {
-  alert("You made the next move!\nThat's it for now");
-  moveCount = ++moveCount;
+  performActions();
+  moveCount = moveCount + 1;
   moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
 }
 
@@ -166,9 +195,7 @@ function handleCreateField() {
 
 function handleModalOk() {
   const newSize = parseInt(fieldSizeInput.value);
-  const errorText = document.getElementById(
-    'errorText',
-  ) as HTMLParagraphElement;
+  const errorText = document.getElementById('errorText') as HTMLParagraphElement;
 
   if (newSize >= 10 && newSize <= 100) {
     fieldSizeX = newSize;
@@ -177,6 +204,9 @@ function handleModalOk() {
     initializeField();
     createField();
     resizeCells();
+    makeActualSize();
+    moveCount = 0;
+    moveDisplay!.textContent = `Move: 0`;
     sizeModal.style.display = 'none';
     errorText.style.display = 'none';
   } else {
@@ -197,12 +227,18 @@ function handleRandomizeField() {
   initializeField();
   createField();
   resizeCells();
+  makeActualSize();
+  moveCount = 0;
+  moveDisplay!.textContent = `Move: 0`;
 }
 
 function handleResetField() {
   initializeField();
   createField();
   resizeCells();
+  makeActualSize();
+  moveCount = 0;
+  moveDisplay!.textContent = `Move: 0`;
 }
 
 document
