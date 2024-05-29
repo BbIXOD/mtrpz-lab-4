@@ -1,11 +1,12 @@
+import Vector from '../Vector.js';
 import { BasicCell } from './BasicCell.js';
 
 export abstract class MovingCell extends BasicCell {
-    protected vector: { x: number; y: number } = { x: 0, y: 0 };
+    protected moveVector: Vector = new Vector(0, 0);
     protected actions: Map<string, (x: number, y: number) => void> = new Map();
 
-    action(x: number, y: number): void {
-        const newPos = { x: x + this.vector.x, y: y + this.vector.y };
+    action(): void {
+        const newPos = { x: this.position.x + this.moveVector.x, y: this.position.y + this.moveVector.y };
         const cell = this.field.getCell(newPos.x, newPos.y);
         const type = cell.constructor.toString();
 
@@ -14,10 +15,10 @@ export abstract class MovingCell extends BasicCell {
             return;
         }
 
-        this.onUnknownCell(x, y);
+        this.onUnknownCell();
     }
 
-    protected onUnknownCell(x: number, y: number) {
+    protected onUnknownCell() {
         console.log('Unknown cell type!');
     }
     
