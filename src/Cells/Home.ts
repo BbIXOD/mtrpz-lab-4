@@ -4,7 +4,7 @@ import { DummyCell } from './DummyCell.js';
 import { Human } from './Human.js';
 
 export class Home extends BasicCell {
-  picture = '../pictures/cab';
+  picture = '../pictures/cabin.png';
   private productionRate = 5;
   private tillProduction = 0;
   private humanOffset = new Vector(1, 0);
