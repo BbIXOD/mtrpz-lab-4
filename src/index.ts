@@ -1,5 +1,6 @@
 import Field from './Field.js';
-import { Cell, DummyCell } from './Cells/Cells.js';
+import { Cell, DummyCell, ArrowCell, Home } from './Cells/Cells.js';
+import { Direction } from './Direction.js';
 
 let fieldSizeX = 10;
 let fieldSizeY = fieldSizeX;
@@ -38,6 +39,8 @@ let moveCount = 0;
 let resizeInterval: NodeJS.Timeout;
 
 let cellsArray: HTMLElement[] = [];
+
+let arrowIndex = 0;
 
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
@@ -119,8 +122,43 @@ function handleCellClick(event: MouseEvent) {
   const cell = field.getCell(Number(x), Number(y));
 
   if (cell) {
-    cell.action();
+    cycleCellState(cell);
+    updateFieldImages();
   }
+}
+
+function cycleCellState(cell: Cell) {
+  if (cell instanceof DummyCell) {
+    if (!homeCellExists()) {
+      field.setCell(cell.position.x, cell.position.y, new Home(field, cell.position.x, cell.position.y));
+    } else {
+      field.setCell(cell.position.x, cell.position.y, new ArrowCell(field, cell.position.x, cell.position.y, Direction.UP));
+    }
+  } 
+
+  if (cell instanceof ArrowCell) {
+    if (cell.arrowDirection === Direction.UP) {
+      field.setCell(cell.position.x, cell.position.y, new ArrowCell(field, cell.position.x, cell.position.y, Direction.RIGHT));
+    } else if (cell.arrowDirection === Direction.RIGHT) {
+      field.setCell(cell.position.x, cell.position.y, new ArrowCell(field, cell.position.x, cell.position.y, Direction.DOWN));
+    } else if (cell.arrowDirection === Direction.DOWN) {
+      field.setCell(cell.position.x, cell.position.y, new ArrowCell(field, cell.position.x, cell.position.y, Direction.LEFT));
+    } else if (cell.arrowDirection === Direction.LEFT) {
+      field.setCell(cell.position.x, cell.position.y, new DummyCell(field, cell.position.x, cell.position.y));
+    }
+  }
+}
+
+function homeCellExists(): boolean {
+  for (let x = 0; x < fieldSizeX; x++) {
+    for (let y = 0; y < fieldSizeY; y++) {
+      const cell = field.getCell(x, y);
+      if (cell instanceof Home) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 function performActions() {
