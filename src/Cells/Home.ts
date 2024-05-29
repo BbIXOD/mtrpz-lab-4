@@ -2,7 +2,7 @@ import Field from '../Field.js';
 import { Cell } from './Cell.js';
 
 export class HomeCell implements Cell {
-  picture = '../pictures/default_cell.png';
+  picture = '../pictures/cabin.png';
   field: Field<Cell>;
   private productionRate = 5;
   private tillProduction = 0;

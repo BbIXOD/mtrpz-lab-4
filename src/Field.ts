@@ -1,7 +1,7 @@
 export default class Field<T> {
-  Cells: T[][];
-  sizeX: number;
-  sizeY: number;
+  private readonly Cells: T[][];
+  private readonly sizeX: number;
+  private readonly sizeY: number;
 
   constructor(x: number, y: number) {
     this.Cells = new Array(x);
