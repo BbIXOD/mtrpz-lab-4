@@ -7,12 +7,14 @@ import { Cell } from "./Cell.js";
 export class ArrowCell extends BasicCell {
     action(): void {}
     readonly picture: string
-    readonly moveVector: Vector;
+    readonly moveVector: Vector
+    readonly arrowDirection: Direction;
 
     constructor(field: Field<Cell>, x: number, y: number, type: Direction) {
         super(field, x, y);
         this.picture = this.getPicture(type);
         this.moveVector = getVector(type);
+        this.arrowDirection = type;
     }
 
     getPicture(dir: Direction) {
