@@ -42,7 +42,7 @@ let cellsArray: HTMLElement[] = [];
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
-      field.Cells[x][y] = new DummyCell(field);
+      field.setCell(x, y, new DummyCell(field));
     }
   }
 }

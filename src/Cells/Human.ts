@@ -3,7 +3,7 @@ import { Cell } from './Cell.js';
 import { DummyCell } from './DummyCell.js';
 
 export class HomeCell implements Cell {
-  picture = '../pictures/default_cell.png'; // TODO: add picture
+  picture = '../pictures/human.png';
   field: Field<Cell>;
   vector: { x: number; y: number } = { x: 1, y: 0 };
   hunger = 0;
