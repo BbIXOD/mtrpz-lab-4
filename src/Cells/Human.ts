@@ -7,24 +7,26 @@ export class HomeCell extends MovingCell {
   picture = '../pictures/human.png';
   hunger = 0;
 
-  constructor(field: Field<Cell>) {
-    super(field);
+  constructor(field: Field<Cell>, x: number, y: number) {
+    super(field, x, y);
   }
 
-  action(x: number, y: number): void {
+  action(): void {
       this.hunger++;
       if (this.hunger > 10) {
-          this.field.setCell(x, y, new DummyCell(this.field));
+          this.field.setCellV(this.position, new DummyCell(this.field));
+          return;
       }
-      super.action(x, y);
+      super.action();
   }
 
-  private walkOnTile(x: number, y: number) {
-    this.field.setCell(x, y, new DummyCell(this.field));
-    this.field.setCell(x + this.vector.x, y + this.vector.y, this);
+  private walkOnTile() {
+    this.field.setCellV(this.position, new DummyCell(this.field));
+    this.position = this.position.add(this.moveVector);
+    this.field.setCellV(this.position, this);
   }
 
-  protected onUnknownCell(x: number, y: number): void {
-      this.walkOnTile(x, y);
+  protected onUnknownCell(): void {
+      this.walkOnTile();
   }
 }
