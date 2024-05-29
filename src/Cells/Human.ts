@@ -1,4 +1,5 @@
 import Field from '../Field.js';
+import { ArrowCell } from './ArrowCell.js';
 import { Cell } from './Cell.js';
 import { DummyCell } from './DummyCell.js';
 import { MovingCell } from './MovingCell.js';
@@ -9,6 +10,8 @@ export class Human extends MovingCell {
 
   constructor(field: Field<Cell>, x: number, y: number) {
     super(field, x, y);
+
+    this.actions.set('ArrowCell', this.walkOnArrow.bind(this));
   }
 
   action(): void {
@@ -18,6 +21,12 @@ export class Human extends MovingCell {
           return;
       }
       super.action();
+  }
+
+  private walkOnArrow(arrow: Cell) {
+    this.walkOnTile();
+    const arrowCell = arrow as ArrowCell;
+    this.moveVector = arrowCell.moveVector;
   }
 
   private walkOnTile() {
