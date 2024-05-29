@@ -20,6 +20,7 @@ export class DummyCell implements Cell {
     this.picture = picture;
     this.field = field;
     this.position = { x, y };
+    field.setCell(x, y, this);
   }
 
   action(): void {

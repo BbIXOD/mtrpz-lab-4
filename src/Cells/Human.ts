@@ -3,7 +3,7 @@ import { Cell } from './Cell.js';
 import { DummyCell } from './DummyCell.js';
 import { MovingCell } from './MovingCell.js';
 
-export class HomeCell extends MovingCell {
+export class Human extends MovingCell {
   picture = '../pictures/human.png';
   hunger = 0;
 
