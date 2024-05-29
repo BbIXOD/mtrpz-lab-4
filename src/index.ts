@@ -37,6 +37,8 @@ let moveCount = 0;
 
 let resizeInterval: NodeJS.Timeout;
 
+let cellsArray: HTMLElement[] = [];
+
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
@@ -62,13 +64,11 @@ function resizeCells() {
   fieldElement.style.gridTemplateColumns = `repeat(${fieldSizeX}, ${cellSize}px)`;
   fieldElement.style.gridTemplateRows = `repeat(${fieldSizeY}, ${cellSize}px)`;
 
-  const cells = document.querySelectorAll('.cell');
-  cells.forEach((cell) => {
-    const element = cell as HTMLElement;
+  cellsArray.forEach((element) => {
     element.style.width = `${cellSize}px`;
     element.style.height = `${cellSize}px`;
 
-    const img = cell.querySelector('img');
+    const img = element.querySelector('img');
     if (img) {
       img.style.width = `${cellSize}px`;
       img.style.height = `${cellSize}px`;
@@ -79,6 +79,8 @@ function resizeCells() {
 }
 
 function createField() {
+  cellsArray = [];
+
   while (fieldElement!.firstChild) {
     fieldElement!.removeChild(fieldElement!.firstChild);
   }
@@ -98,6 +100,8 @@ function createField() {
         img.alt = `Cell at (${x}, ${y})`;
         cellElement.appendChild(img);
       }
+
+      cellsArray.push(cellElement);
 
       fieldElement!.appendChild(cellElement);
     }
@@ -130,9 +134,7 @@ function performActions() {
 }
 
 function updateFieldImages() {
-  const cells = document.querySelectorAll('.cell');
-  cells.forEach((cell) => {
-    const element = cell as HTMLElement;
+  cellsArray.forEach((element) => {
     const x = parseInt(element.dataset.x || '0');
     const y = parseInt(element.dataset.y || '0');
     const fieldCell = field.getCell(x, y);
@@ -144,9 +146,6 @@ function updateFieldImages() {
         element.appendChild(img);
       }
       img.src = fieldCell.picture;
-      img.alt = `Cell at (${x}, ${y})`;
-      img.style.width = `${element.offsetWidth}px`;
-      img.style.height = `${element.offsetHeight}px`;
     }
   });
 }
