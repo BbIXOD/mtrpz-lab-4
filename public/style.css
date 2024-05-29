@@ -59,6 +59,29 @@ body, html {
     object-fit: contain;
 }
 
+#scoreDisplay {
+    color: black;
+    font-size: 4vh;
+    position: absolute;
+    top: 1vh;
+    margin-left: 85%;
+}
+#humanCountDisplay {
+    color: black;
+    font-size: 4vh;
+    position: absolute;
+    top: 7vh;
+    margin-left: 85%;
+}
+#humanHungerDisplay {
+    color: black;
+    font-size: 4vh;
+    position: absolute;
+    top: 15vh;
+    margin-left: 85%;
+    display: none;
+}
+
 #panel {
     width: 100%;
     background-color: darkgray;
