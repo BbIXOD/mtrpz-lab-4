@@ -133,10 +133,10 @@ function cycleCellState(cell: Cell) {
   if (cell instanceof DummyCell) {
     if (!homeCellExists()) {
       makeHumanIformationDissapiar();
-      field.setCell(cell.position.x, cell.position.y, new Home(field, cell.position.x, cell.position.y));
+      new Home(field, cell.position.x, cell.position.y);
     } else {
       makeHumanIformationDissapiar();
-      field.setCell(cell.position.x, cell.position.y, new ArrowCell(field, cell.position.x, cell.position.y, Direction.UP));
+      new ArrowCell(field, cell.position.x, cell.position.y, Direction.UP);
     }
   } 
 
@@ -147,16 +147,16 @@ function cycleCellState(cell: Cell) {
   if (cell instanceof ArrowCell) {
     if (cell.arrowDirection === Direction.UP) {
       makeHumanIformationDissapiar();
-      field.setCell(cell.position.x, cell.position.y, new ArrowCell(field, cell.position.x, cell.position.y, Direction.RIGHT));
+      new ArrowCell(field, cell.position.x, cell.position.y, Direction.RIGHT);
     } else if (cell.arrowDirection === Direction.RIGHT) {
       makeHumanIformationDissapiar();
-      field.setCell(cell.position.x, cell.position.y, new ArrowCell(field, cell.position.x, cell.position.y, Direction.DOWN));
+      new ArrowCell(field, cell.position.x, cell.position.y, Direction.DOWN);
     } else if (cell.arrowDirection === Direction.DOWN) {
       makeHumanIformationDissapiar();
-      field.setCell(cell.position.x, cell.position.y, new ArrowCell(field, cell.position.x, cell.position.y, Direction.LEFT));
+      new ArrowCell(field, cell.position.x, cell.position.y, Direction.LEFT);
     } else if (cell.arrowDirection === Direction.LEFT) {
       makeHumanIformationDissapiar();
-      field.setCell(cell.position.x, cell.position.y, new DummyCell(field, cell.position.x, cell.position.y));
+      new DummyCell(field, cell.position.x, cell.position.y);
     }
   }
 
