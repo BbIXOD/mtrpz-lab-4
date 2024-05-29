@@ -10,6 +10,7 @@ export abstract class BasicCell implements Cell {
     constructor(field: Field<Cell>, x: number, y: number) {
         this.position = new Vector(x, y);
         this.field = field;
+        field.setCell(x, y, this);
     }
 
     abstract action(): void;
