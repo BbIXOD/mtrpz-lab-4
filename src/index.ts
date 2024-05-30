@@ -200,6 +200,13 @@ function performActions() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
       const cell = field.getCell(x, y);
+      cell.didAction = false;
+    }
+  }
+  for (let x = 0; x < fieldSizeX; x++) {
+    for (let y = 0; y < fieldSizeY; y++) {
+      const cell = field.getCell(x, y);
+      if (cell.didAction) continue;
       cell.action();
     }
   }
