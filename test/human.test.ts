@@ -1,5 +1,5 @@
 import Field from '../src/Field.js';
-import { Cell, DummyCell, Human } from '../src/Cells/Cells.js';
+import { Cell, Deer, DummyCell, Human, Stone, Tree } from '../src/Cells/Cells.js';
 import Vector from '../src/Vector.js';
 import { expect } from 'chai';
 import { ArrowCell } from '../src/Cells/ArrowCell.js';
@@ -28,8 +28,35 @@ describe('Human', () => {
   it('should starve', function () {
     const field = new Field<Cell>(10, 10);
     const human = new Human(field, 0, 0);
-    human.hunger = 10;
+    human.hunger = Object.getOwnPropertyDescriptor(human, 'maxHunger')!.value;
     human.action();
     expect(field.getCell(0, 0)).to.be.instanceOf(DummyCell);
+  });
+
+  it('should be able to evolve', function () {
+    const field = new Field<Cell>(10, 10);
+    const human = new Human(field, 0, 0);
+    human.moveVector = new Vector(0, 1);
+    new Tree(field, 0, 1);
+    human.action();
+    expect(human.evoStage).to.equal(1);
+  });
+
+  it('should be able to retreat', function () {
+    const field = new Field<Cell>(10, 10);
+    const human = new Human(field, 0, 1);
+    human.moveVector = new Vector(0, 1);
+    new Stone(field, 0, 2);
+    human.action();
+    expect(human.moveVector).to.deep.equal(new Vector(-0, -1));
+  });
+
+  it('should be able to reset hunger', function () {
+    const field = new Field<Cell>(10, 10);
+    const human = new Human(field, 0, 1);
+    human.moveVector = new Vector(0, 1);
+    new Deer(field, 0, 2);
+    human.action();
+    expect(human.hunger).to.equal(0);
   });
 });
