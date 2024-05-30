@@ -17,7 +17,7 @@ export class Human extends MovingCell {
   action(): void {
       this.hunger++;
       if (this.hunger > 10) {
-          this.field.setCellV(this.position, new DummyCell(this.field));
+          new DummyCell(this.field, this.position.x, this.position.y);
           return;
       }
       super.action();
