@@ -90,8 +90,8 @@ function createField() {
     fieldElement!.removeChild(fieldElement!.firstChild);
   }
 
-  for (let x = 0; x < fieldSizeX; x++) {
-    for (let y = 0; y < fieldSizeY; y++) {
+  for (let y = 0; y < fieldSizeY; y++) {
+    for (let x = 0; x < fieldSizeX; x++) {
       const cellElement = document.createElement('div');
       cellElement.className = 'cell';
       cellElement.dataset.x = x.toString();
@@ -167,8 +167,8 @@ function cycleCellState(cell: Cell) {
 }
 
 function homeCellExists(): boolean {
-  for (let x = 0; x < fieldSizeX; x++) {
-    for (let y = 0; y < fieldSizeY; y++) {
+  for (let y = 0; y < fieldSizeY; y++) {
+    for (let x = 0; x < fieldSizeX; x++) {
       const cell = field.getCell(x, y);
       if (cell instanceof Home) {
         return true;
@@ -185,8 +185,8 @@ function makeHumanIformationDissapiar() {
 
 function countHumanCells(): number {
   let count = 0;
-  for (let x = 0; x < fieldSizeX; x++) {
-    for (let y = 0; y < fieldSizeY; y++) {
+  for (let y = 0; y < fieldSizeY; y++) {
+    for (let x = 0; x < fieldSizeX; x++) {
       const cell = field.getCell(x, y);
       if (cell instanceof Human) {
         count++;
@@ -197,9 +197,16 @@ function countHumanCells(): number {
 }
 
 function performActions() {
-  for (let x = 0; x < fieldSizeX; x++) {
-    for (let y = 0; y < fieldSizeY; y++) {
+  for (let y = 0; y < fieldSizeY; y++) {
+    for (let x = 0; x < fieldSizeX; x++) {
       const cell = field.getCell(x, y);
+      cell.didAction = false;
+    }
+  }
+  for (let y = 0; y < fieldSizeY; y++) {
+    for (let x = 0; x < fieldSizeX; x++) {
+      const cell = field.getCell(x, y);
+      if (cell.didAction) continue;
       cell.action();
     }
   }
