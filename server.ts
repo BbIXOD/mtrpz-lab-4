@@ -18,15 +18,12 @@ const mimeTypes: Record<string, string> = {
   '.ttf': 'font/ttf',
 };
 
-const requestListener = (
-  req: http.IncomingMessage,
-  _res: http.ServerResponse,
-) => {
+const requestListener = (req: http.IncomingMessage, res: http.ServerResponse) => {
   const url = req.url;
   if (!url) return;
 
-  if (url === '/') onRootRequest(req, _res);
-  else requestFile(req, _res);
+  if (url === '/') onRootRequest(req, res);
+  else requestFile(req, res);
 };
 
 const server = http.createServer(requestListener);
@@ -35,10 +32,18 @@ server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-const onRootRequest = (
-  _req: http.IncomingMessage,
-  res: http.ServerResponse,
-) => {
+const shutdown = () => {
+  console.log('Shutting down server...');
+  server.close(() => {
+    console.log('Server has been shut down.');
+    process.exit(0);
+  });
+};
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+
+const onRootRequest = (_req: http.IncomingMessage, res: http.ServerResponse) => {
   const content = fs.readFileSync(indexFilePath, 'utf8');
   res.end(content);
 };
