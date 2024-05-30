@@ -1,5 +1,6 @@
 import Field from './Field.js';
-import { Cell, DummyCell } from './Cells/Cells.js';
+import { Cell, DummyCell, ArrowCell, Home, Human } from './Cells/Cells.js';
+import { Direction } from './Direction.js';
 
 let fieldSizeX = 10;
 let fieldSizeY = fieldSizeX;
@@ -9,6 +10,8 @@ const fieldElement = document.getElementById('field');
 const panelElement = document.getElementById('panel');
 const scaleDisplay = document.getElementById('scaleDisplay');
 const moveDisplay = document.getElementById('moveDisplay');
+const humanCountDisplay = document.getElementById('humanCountDisplay');
+const humanHungerDisplay = document.getElementById('humanHungerDisplay');
 const fieldSizeInput = document.getElementById('fieldSizeInput') as HTMLInputElement;
 const sizeModal = document.getElementById('sizeModal') as HTMLElement;
 const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
@@ -38,6 +41,8 @@ let moveCount = 0;
 let resizeInterval: NodeJS.Timeout;
 
 let cellsArray: HTMLElement[] = [];
+
+let arrowIndex = 0;
 
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
@@ -119,8 +124,76 @@ function handleCellClick(event: MouseEvent) {
   const cell = field.getCell(Number(x), Number(y));
 
   if (cell) {
-    cell.action();
+    cycleCellState(cell);
+    updateFieldImages();
   }
+}
+
+function cycleCellState(cell: Cell) {
+  if (cell instanceof DummyCell) {
+    if (!homeCellExists()) {
+      makeHumanIformationDissapiar();
+      new Home(field, cell.position.x, cell.position.y);
+    } else {
+      makeHumanIformationDissapiar();
+      new ArrowCell(field, cell.position.x, cell.position.y, Direction.UP);
+    }
+  } 
+
+  if (cell instanceof Home) {
+    makeHumanIformationDissapiar();
+  }
+
+  if (cell instanceof ArrowCell) {
+    if (cell.arrowDirection === Direction.UP) {
+      makeHumanIformationDissapiar();
+      new ArrowCell(field, cell.position.x, cell.position.y, Direction.RIGHT);
+    } else if (cell.arrowDirection === Direction.RIGHT) {
+      makeHumanIformationDissapiar();
+      new ArrowCell(field, cell.position.x, cell.position.y, Direction.DOWN);
+    } else if (cell.arrowDirection === Direction.DOWN) {
+      makeHumanIformationDissapiar();
+      new ArrowCell(field, cell.position.x, cell.position.y, Direction.LEFT);
+    } else if (cell.arrowDirection === Direction.LEFT) {
+      makeHumanIformationDissapiar();
+      new DummyCell(field, cell.position.x, cell.position.y);
+    }
+  }
+
+  if (cell instanceof Human) {
+    humanHungerDisplay!.textContent = `Hunger: ${cell.hunger}`;
+    humanHungerDisplay!.style.display = 'block';
+  }
+}
+
+function homeCellExists(): boolean {
+  for (let x = 0; x < fieldSizeX; x++) {
+    for (let y = 0; y < fieldSizeY; y++) {
+      const cell = field.getCell(x, y);
+      if (cell instanceof Home) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function makeHumanIformationDissapiar() {
+  humanHungerDisplay!.textContent = `Hunger: :)`;
+  humanHungerDisplay!.style.display = 'none';
+}
+
+function countHumanCells(): number {
+  let count = 0;
+  for (let x = 0; x < fieldSizeX; x++) {
+    for (let y = 0; y < fieldSizeY; y++) {
+      const cell = field.getCell(x, y);
+      if (cell instanceof Human) {
+        count++;
+      }
+    }
+  }
+  return count;
 }
 
 function performActions() {
@@ -152,8 +225,11 @@ function updateFieldImages() {
 
 function makeNextMove() {
   performActions();
+  const humanCount = countHumanCells();
+  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
   moveCount = moveCount + 1;
   moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
+  makeHumanIformationDissapiar();
 }
 
 function increaseSize() {
@@ -191,6 +267,7 @@ function handleButtonClick() {
 
 function handleCreateField() {
   sizeModal.style.display = 'block';
+  makeHumanIformationDissapiar();
 }
 
 function handleModalOk() {
@@ -207,6 +284,9 @@ function handleModalOk() {
     makeActualSize();
     moveCount = 0;
     moveDisplay!.textContent = `Move: 0`;
+    const humanCount = countHumanCells();
+    humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+    makeHumanIformationDissapiar();
     sizeModal.style.display = 'none';
     errorText.style.display = 'none';
   } else {
@@ -217,6 +297,7 @@ function handleModalOk() {
 
 function handleCloseModal() {
   sizeModal.style.display = 'none';
+  makeHumanIformationDissapiar();
 }
 
 function handleRandomizeField() {
@@ -230,6 +311,9 @@ function handleRandomizeField() {
   makeActualSize();
   moveCount = 0;
   moveDisplay!.textContent = `Move: 0`;
+  const humanCount = countHumanCells();
+  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+  makeHumanIformationDissapiar();
 }
 
 function handleResetField() {
@@ -239,6 +323,9 @@ function handleResetField() {
   makeActualSize();
   moveCount = 0;
   moveDisplay!.textContent = `Move: 0`;
+  const humanCount = countHumanCells();
+  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+  makeHumanIformationDissapiar();
 }
 
 document
@@ -249,6 +336,7 @@ document
   .addEventListener('click', function() {
     const errorText = document.getElementById('errorText') as HTMLParagraphElement;
     errorText.style.display = 'none';
+    makeHumanIformationDissapiar();
   });
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);

@@ -30,7 +30,7 @@ export class Human extends MovingCell {
   }
 
   private walkOnTile() {
-    this.field.setCellV(this.position, new DummyCell(this.field));
+    new DummyCell(this.field, this.position.x, this.position.y);
     this.position = this.position.add(this.moveVector);
     this.field.setCellV(this.position, this);
   }

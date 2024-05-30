@@ -8,4 +8,8 @@ export default class Vector {
     subtract(vector: Vector) {
         return new Vector(this.x - vector.x, this.y - vector.y);
     }
+
+    copy() {
+        return new Vector(this.x, this.y);
+    }
 }
