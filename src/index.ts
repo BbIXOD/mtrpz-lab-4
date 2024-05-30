@@ -12,7 +12,9 @@ const scaleDisplay = document.getElementById('scaleDisplay');
 const moveDisplay = document.getElementById('moveDisplay');
 const humanCountDisplay = document.getElementById('humanCountDisplay');
 const humanHungerDisplay = document.getElementById('humanHungerDisplay');
-const fieldSizeInput = document.getElementById('fieldSizeInput') as HTMLInputElement;
+const fieldSizeInput = document.getElementById(
+  'fieldSizeInput',
+) as HTMLInputElement;
 const sizeModal = document.getElementById('sizeModal') as HTMLElement;
 const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
 const closeButton = document.querySelector('.close') as HTMLElement;
@@ -42,7 +44,7 @@ let resizeInterval: NodeJS.Timeout;
 
 let cellsArray: HTMLElement[] = [];
 
-let arrowIndex = 0;
+const arrowIndex = 0;
 
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
@@ -138,7 +140,7 @@ function cycleCellState(cell: Cell) {
       makeHumanIformationDissapiar();
       new ArrowCell(field, cell.position.x, cell.position.y, Direction.UP);
     }
-  } 
+  }
 
   if (cell instanceof Home) {
     makeHumanIformationDissapiar();
@@ -279,7 +281,9 @@ function handleCreateField() {
 
 function handleModalOk() {
   const newSize = parseInt(fieldSizeInput.value);
-  const errorText = document.getElementById('errorText') as HTMLParagraphElement;
+  const errorText = document.getElementById(
+    'errorText',
+  ) as HTMLParagraphElement;
 
   if (newSize >= 10 && newSize <= 100) {
     fieldSizeX = newSize;
@@ -338,13 +342,13 @@ function handleResetField() {
 document
   .getElementById('buttonCreateField')!
   .addEventListener('click', handleCreateField);
-document
-  .getElementById('closeModal')!
-  .addEventListener('click', function() {
-    const errorText = document.getElementById('errorText') as HTMLParagraphElement;
-    errorText.style.display = 'none';
-    makeHumanIformationDissapiar();
-  });
+document.getElementById('closeModal')!.addEventListener('click', function () {
+  const errorText = document.getElementById(
+    'errorText',
+  ) as HTMLParagraphElement;
+  errorText.style.display = 'none';
+  makeHumanIformationDissapiar();
+});
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);
 

@@ -18,7 +18,10 @@ const mimeTypes: Record<string, string> = {
   '.ttf': 'font/ttf',
 };
 
-const requestListener = (req: http.IncomingMessage, res: http.ServerResponse) => {
+const requestListener = (
+  req: http.IncomingMessage,
+  res: http.ServerResponse,
+) => {
   const url = req.url;
   if (!url) return;
 
@@ -43,7 +46,10 @@ const shutdown = () => {
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
-const onRootRequest = (_req: http.IncomingMessage, res: http.ServerResponse) => {
+const onRootRequest = (
+  _req: http.IncomingMessage,
+  res: http.ServerResponse,
+) => {
   const content = fs.readFileSync(indexFilePath, 'utf8');
   res.end(content);
 };
