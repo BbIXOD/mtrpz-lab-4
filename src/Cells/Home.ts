@@ -17,7 +17,7 @@ export class Home extends BasicCell {
         this.tillProduction--;
         return;
       }
-      
+
       this.tillProduction = 0;
       const human = new Human(this.field, humanPosition.x, humanPosition.y);
       human.moveVector = this.humanOffset.copy();
