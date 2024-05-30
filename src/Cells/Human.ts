@@ -34,6 +34,11 @@ export class Human extends MovingCell {
 
   private retreat() {
     this.moveVector = this.moveVector.invert();
+    const opposingCell = this.field.getCellV(this.position.add(this.moveVector));
+    const cellName = opposingCell.constructor.name;
+    if (this.actions.get(cellName)?.name === 'bound ' + this.retreat.name) {
+      return;
+    }
     this.walkOnTile();
   }
 
