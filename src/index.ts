@@ -90,8 +90,8 @@ function createField() {
     fieldElement!.removeChild(fieldElement!.firstChild);
   }
 
-  for (let x = 0; x < fieldSizeX; x++) {
-    for (let y = 0; y < fieldSizeY; y++) {
+  for (let y = 0; y < fieldSizeY; y++) {
+    for (let x = 0; x < fieldSizeX; x++) {
       const cellElement = document.createElement('div');
       cellElement.className = 'cell';
       cellElement.dataset.x = x.toString();
