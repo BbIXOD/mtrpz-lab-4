@@ -1,5 +1,5 @@
 import Field from './Field.js';
-import { Cell, DummyCell, ArrowCell, Home, Human } from './Cells/Cells.js';
+import { Cell, DummyCell, ArrowCell, Home, Human, Deer, Tree, Wolf, Stone, Bear, Iron } from './Cells/Cells.js';
 import { Direction } from './Direction.js';
 
 let fieldSizeX = 10;
@@ -44,12 +44,34 @@ let resizeInterval: NodeJS.Timeout;
 
 let cellsArray: HTMLElement[] = [];
 
-const arrowIndex = 0;
+const cellClasses = [
+  { class: DummyCell, chance: 76 },
+  { class: Deer, chance: 7 },
+  { class: Tree, chance: 5 },
+  { class: Wolf, chance: 5 },
+  { class: Stone, chance: 3 },
+  { class: Bear, chance: 3 },
+  { class: Iron, chance: 1 }
+];
+
+const totalChance = cellClasses.reduce((sum, cell) => sum + cell.chance, 0);
+
+function getRandomCellClass() {
+  let random = Math.random() * totalChance;
+  for (let i = 0; i < cellClasses.length; i++) {
+    if (random < cellClasses[i].chance) {
+      return cellClasses[i].class;
+    }
+    random -= cellClasses[i].chance;
+  }
+  return DummyCell;
+}
 
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
-      new DummyCell(field, x, y);
+      const CellClass = getRandomCellClass();
+      new CellClass(field, x, y);
     }
   }
 }
@@ -132,32 +154,23 @@ function handleCellClick(event: MouseEvent) {
 }
 
 function cycleCellState(cell: Cell) {
+  makeHumanIformationDissapiar();
   if (cell instanceof DummyCell) {
     if (!homeCellExists()) {
-      makeHumanIformationDissapiar();
       new Home(field, cell.position.x, cell.position.y);
     } else {
-      makeHumanIformationDissapiar();
       new ArrowCell(field, cell.position.x, cell.position.y, Direction.UP);
     }
   }
 
-  if (cell instanceof Home) {
-    makeHumanIformationDissapiar();
-  }
-
   if (cell instanceof ArrowCell) {
     if (cell.arrowDirection === Direction.UP) {
-      makeHumanIformationDissapiar();
       new ArrowCell(field, cell.position.x, cell.position.y, Direction.RIGHT);
     } else if (cell.arrowDirection === Direction.RIGHT) {
-      makeHumanIformationDissapiar();
       new ArrowCell(field, cell.position.x, cell.position.y, Direction.DOWN);
     } else if (cell.arrowDirection === Direction.DOWN) {
-      makeHumanIformationDissapiar();
       new ArrowCell(field, cell.position.x, cell.position.y, Direction.LEFT);
     } else if (cell.arrowDirection === Direction.LEFT) {
-      makeHumanIformationDissapiar();
       new DummyCell(field, cell.position.x, cell.position.y);
     }
   }
