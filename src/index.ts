@@ -3,7 +3,7 @@ import { Direction } from './Direction.js';
 import { ArrowCell, Cell, DummyCell, Home, Human } from './Cells/Cells.js';
 import { CellFactory, CellType } from './CellFactory.js';
 
-let fieldSizeX = 10;
+let fieldSizeX = 15;
 let fieldSizeY = fieldSizeX;
 let field = new Field<Cell>(fieldSizeX, fieldSizeY);
 const fieldContainer = document.getElementById('field-container');
@@ -210,12 +210,7 @@ function cycleCellState(cell: Cell) {
         Direction.LEFT,
       );
     } else if (cell.arrowDirection === Direction.LEFT) {
-      CellFactory.createArrowCell(
-        field,
-        cell.position.x,
-        cell.position.y,
-        Direction.UP,
-      );
+      CellFactory.createCellV(CellType.DummyCell, field, cell.position);
     }
   }
 
