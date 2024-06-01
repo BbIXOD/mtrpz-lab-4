@@ -18,6 +18,7 @@ const fieldSizeInput = document.getElementById(
 const sizeModal = document.getElementById('sizeModal') as HTMLElement;
 const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
 const closeButton = document.querySelector('.close') as HTMLElement;
+const startStopMoveButton = document.getElementById('buttonStartStopMove') as HTMLElement;
 
 if (
   !fieldContainer ||
@@ -28,7 +29,8 @@ if (
   !fieldSizeInput ||
   !sizeModal ||
   !modalOkButton ||
-  !closeButton
+  !closeButton ||
+  !startStopMoveButton
 ) {
   throw new Error('Failed to get elements');
 }
@@ -38,6 +40,7 @@ const minScaleFactor = 0.05;
 const maxScaleFactor = 3;
 const scaleStep = 0.01;
 
+let timerId: number | null = null;
 let moveCount = 0;
 
 let resizeInterval: NodeJS.Timeout;
@@ -245,12 +248,34 @@ function updateFieldImages() {
   });
 }
 
+function startTimer() {
+  timerId = window.setInterval(makeNextMove, 2000);
+}
+
+function stopTimer() {
+  if (timerId !== null) {
+    clearInterval(timerId);
+    timerId = null;
+  }
+}
+
+function resetTimer() {
+  stopTimer();
+  moveCount = 0;
+  updateDisplays();
+  const img = startStopMoveButton.querySelector('img')!;
+  img.src = './pictures/start_game.png';
+}
+
+function updateDisplays() {
+  moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
+  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
+}
+
 function makeNextMove() {
   performActions();
-  const humanCount = countHumanCells();
-  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
-  moveCount = moveCount + 1;
-  moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
+  moveCount++;
+  updateDisplays();
   makeHumanIformationDissapiar();
 }
 
@@ -283,11 +308,8 @@ function stopResize() {
   clearInterval(resizeInterval);
 }
 
-function handleButtonClick() {
-  alert('Welcome!');
-}
-
 function handleCreateField() {
+  stopTimer();
   sizeModal.style.display = 'block';
   makeHumanIformationDissapiar();
 }
@@ -306,8 +328,7 @@ function handleModalOk() {
     createField();
     resizeCells();
     makeActualSize();
-    moveCount = 0;
-    moveDisplay!.textContent = `Move: 0`;
+    resetTimer();
     const humanCount = countHumanCells();
     humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
     makeHumanIformationDissapiar();
@@ -333,8 +354,7 @@ function handleRandomizeField() {
   createField();
   resizeCells();
   makeActualSize();
-  moveCount = 0;
-  moveDisplay!.textContent = `Move: 0`;
+  resetTimer();
   const humanCount = countHumanCells();
   humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
   makeHumanIformationDissapiar();
@@ -345,8 +365,7 @@ function handleResetField() {
   createField();
   resizeCells();
   makeActualSize();
-  moveCount = 0;
-  moveDisplay!.textContent = `Move: 0`;
+  resetTimer();
   const humanCount = countHumanCells();
   humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
   makeHumanIformationDissapiar();
@@ -361,13 +380,23 @@ document.getElementById('closeModal')!.addEventListener('click', function () {
   ) as HTMLParagraphElement;
   errorText.style.display = 'none';
   makeHumanIformationDissapiar();
+  startTimer();
 });
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);
 
 document
-  .getElementById('buttonNextMove')!
-  .addEventListener('click', makeNextMove);
+  .getElementById('buttonStartStopMove')!
+  .addEventListener('click', () => {
+    const img = startStopMoveButton.querySelector('img')!;
+    if (img.src.includes('start_game.png')) {
+      startTimer();
+      img.src = './pictures/pause_game.png';
+    } else if (img.src.includes('pause_game.png')) {
+      stopTimer();
+      img.src = './pictures/start_game.png';
+    }
+  });
 
 document
   .getElementById('buttonZoomIn')!
