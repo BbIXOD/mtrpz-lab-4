@@ -1,8 +1,7 @@
 import Field from '../src/Field.js';
-import { Cell, Deer, DummyCell, Human, Stone, Tree } from '../src/Cells/Cells.js';
+import { Cell, Deer, DummyCell, Human, Stone, Tree, Water, ArrowCell } from '../src/Cells/Cells.js';
 import Vector from '../src/Vector.js';
 import { expect } from 'chai';
-import { ArrowCell } from '../src/Cells/ArrowCell.js';
 import { Direction } from '../src/Direction.js';
 
 describe('Human', () => {
@@ -58,5 +57,14 @@ describe('Human', () => {
     new Deer(field, 0, 2);
     human.action();
     expect(human.hunger).to.equal(0);
+  });
+
+  it('should be able to dye', function () {
+    const field = new Field<Cell>(10, 10);
+    const human = new Human(field, 0, 1);
+    human.moveVector = new Vector(0, 1);
+    new Water(field, 0, 2);
+    human.action();
+    expect(field.getCell(0, 1)).to.be.instanceOf(DummyCell);
   });
 });

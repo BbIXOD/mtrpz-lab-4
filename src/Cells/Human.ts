@@ -31,6 +31,8 @@ export class Human extends MovingCell {
     this.actions.set('Deer', this.resetHunger.bind(this));
     this.actions.set('Wolf', this.retreat.bind(this));
     this.actions.set('Bear', this.retreat.bind(this));
+
+    this.actions.set('Water', this.dye.bind(this));
   }
 
   action(): void {
@@ -67,12 +69,18 @@ export class Human extends MovingCell {
         this.maxHunger = 30; // TODO: think about other buff
         break;
     }
+
+    this.walkOnTile();
   }
 
   private walkOnArrow(arrow: Cell) {
     this.walkOnTile();
     const arrowCell = arrow as ArrowCell;
     this.moveVector = arrowCell.moveVector;
+  }
+
+  private dye() {
+    new DummyCell(this.field, this.position.x, this.position.y);
   }
 
   private retreat() {
