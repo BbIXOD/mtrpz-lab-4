@@ -20,6 +20,7 @@ export class DummyCell extends BasicCell {
       value: name ?? this.constructor.name,
     });
   }
-  // eslint-disable-next-line class-methods-use-this
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   action(): void {}
 }

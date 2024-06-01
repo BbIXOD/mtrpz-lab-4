@@ -5,14 +5,10 @@ import { Cell } from './Cell.js';
 export abstract class BasicCell implements Cell {
   abstract picture: string;
   position: Vector;
-  protected readonly field: Field<Cell>;
-  didAction: boolean;
+  didAction = false;
 
-  constructor(field: Field<Cell>, x: number, y: number) {
+  constructor(protected readonly field: Field<Cell>, x: number, y: number) {
     this.position = new Vector(x, y);
-    this.field = field;
-    field.setCell(x, y, this);
-    this.didAction = true;
   }
 
   action() {

@@ -1,11 +1,11 @@
+import { CellFactory, CellType } from '../CellFactory.js';
 import Vector from '../Vector.js';
 import { BasicCell } from './BasicCell.js';
-import { ArrowCell, DummyCell } from './Cells.js';
-import { Human } from './Human.js';
+import { ArrowCell, DummyCell, Human } from './Cells.js';
 
 export class Home extends BasicCell {
   picture = '../pictures/cabin.png';
-  private productionRate = 5;
+  private productionRate = 10;
   private tillProduction = this.productionRate - 1;
   private humanOffset = new Vector(0, 1);
 
@@ -20,7 +20,12 @@ export class Home extends BasicCell {
       }
 
       this.tillProduction = 0;
-      const human = new Human(this.field, humanPosition.x, humanPosition.y);
+      const human = CellFactory.createCell(
+        CellType.Human,
+        this.field,
+        humanPosition.x,
+        humanPosition.y,
+      ) as Human;
       human.moveVector = this.humanOffset.copy();
     }
   }
