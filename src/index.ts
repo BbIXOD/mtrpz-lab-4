@@ -61,13 +61,13 @@ let cellsArray: HTMLElement[] = [];
 
 const cellClasses = [
   { class: DummyCell, chance: 90 },
+  { class: Water, chance: 8 },
   { class: Deer, chance: 7 },
   { class: Tree, chance: 5 },
   { class: Wolf, chance: 5 },
   { class: Stone, chance: 3 },
   { class: Bear, chance: 3 },
   { class: Iron, chance: 1 },
-  { class: Water, chance: 8 },
 ];
 
 const totalChance = cellClasses.reduce((sum, cell) => sum + cell.chance, 0);
