@@ -1,6 +1,7 @@
 import Field from './Field.js';
-import { Cell, DummyCell, ArrowCell, Home, Human, Deer, Tree, Wolf, Stone, Bear, Iron, Water } from './Cells/Cells.js';
 import { Direction } from './Direction.js';
+import { ArrowCell, Cell, DummyCell, Home, Human } from './Cells/Cells.js';
+import { CellFactory, CellType } from './CellFactory.js';
 
 let fieldSizeX = 10;
 let fieldSizeY = fieldSizeX;
@@ -18,7 +19,9 @@ const fieldSizeInput = document.getElementById(
 const sizeModal = document.getElementById('sizeModal') as HTMLElement;
 const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
 const closeButton = document.querySelector('.close') as HTMLElement;
-const startStopMoveButton = document.getElementById('buttonStartStopMove') as HTMLElement;
+const startStopMoveButton = document.getElementById(
+  'buttonStartStopMove',
+) as HTMLElement;
 const gameOverModal = document.getElementById('gameOverModal') as HTMLElement;
 
 if (
@@ -49,7 +52,7 @@ const speeds = [
   { value: 250, name: '2.5x' },
   { value: 2500, name: '0.25x' },
   { value: 2000, name: '0.5x' },
-  { value: 1500, name: '0.75x' }
+  { value: 1500, name: '0.75x' },
 ];
 let currentSpeedIndex = 0;
 let timerId: number | null = null;
@@ -60,14 +63,14 @@ let resizeInterval: NodeJS.Timeout;
 let cellsArray: HTMLElement[] = [];
 
 const cellClasses = [
-  { class: DummyCell, chance: 90 },
-  { class: Water, chance: 8 },
-  { class: Deer, chance: 7 },
-  { class: Tree, chance: 5 },
-  { class: Wolf, chance: 5 },
-  { class: Stone, chance: 3 },
-  { class: Bear, chance: 3 },
-  { class: Iron, chance: 1 },
+  { class: CellType.DummyCell, chance: 90 },
+  { class: CellType.Water, chance: 8 },
+  { class: CellType.Deer, chance: 7 },
+  { class: CellType.Tree, chance: 5 },
+  { class: CellType.Wolf, chance: 5 },
+  { class: CellType.Stone, chance: 3 },
+  { class: CellType.Bear, chance: 3 },
+  { class: CellType.Iron, chance: 1 },
 ];
 
 const totalChance = cellClasses.reduce((sum, cell) => sum + cell.chance, 0);
@@ -80,14 +83,14 @@ function getRandomCellClass() {
     }
     random -= cellClasses[i].chance;
   }
-  return DummyCell;
+  return CellType.DummyCell;
 }
 
 function initializeField() {
   for (let x = 0; x < fieldSizeX; x++) {
     for (let y = 0; y < fieldSizeY; y++) {
       const CellClass = getRandomCellClass();
-      new CellClass(field, x, y);
+      CellFactory.createCell(CellClass, field, x, y);
     }
   }
 }
@@ -173,21 +176,46 @@ function cycleCellState(cell: Cell) {
   makeHumanIformationDissapiar();
   if (cell instanceof DummyCell) {
     if (!homeCellExists()) {
-      new Home(field, cell.position.x, cell.position.y);
+      CellFactory.createCellV(CellType.Home, field, cell.position);
     } else {
-      new ArrowCell(field, cell.position.x, cell.position.y, Direction.UP);
+      CellFactory.createArrowCell(
+        field,
+        cell.position.x,
+        cell.position.y,
+        Direction.UP,
+      );
     }
   }
 
   if (cell instanceof ArrowCell) {
     if (cell.arrowDirection === Direction.UP) {
-      new ArrowCell(field, cell.position.x, cell.position.y, Direction.RIGHT);
+      CellFactory.createArrowCell(
+        field,
+        cell.position.x,
+        cell.position.y,
+        Direction.RIGHT,
+      );
     } else if (cell.arrowDirection === Direction.RIGHT) {
-      new ArrowCell(field, cell.position.x, cell.position.y, Direction.DOWN);
+      CellFactory.createArrowCell(
+        field,
+        cell.position.x,
+        cell.position.y,
+        Direction.DOWN,
+      );
     } else if (cell.arrowDirection === Direction.DOWN) {
-      new ArrowCell(field, cell.position.x, cell.position.y, Direction.LEFT);
+      CellFactory.createArrowCell(
+        field,
+        cell.position.x,
+        cell.position.y,
+        Direction.LEFT,
+      );
     } else if (cell.arrowDirection === Direction.LEFT) {
-      new DummyCell(field, cell.position.x, cell.position.y);
+      CellFactory.createArrowCell(
+        field,
+        cell.position.x,
+        cell.position.y,
+        Direction.UP,
+      );
     }
   }
 
@@ -294,7 +322,6 @@ function makeNextMove() {
   if (countHumanCells() >= 7) {
     stopTimer();
     gameOverModal.style.display = 'block';
-    return;
   }
 }
 
@@ -390,7 +417,8 @@ function handleResetField() {
 function handleTimerMoveSpeed() {
   currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
   timerSpeed = speeds[currentSpeedIndex].value;
-  document.getElementById("buttonMoveSpeed")!.innerText = speeds[currentSpeedIndex].name;
+  document.getElementById('buttonMoveSpeed')!.innerText =
+    speeds[currentSpeedIndex].name;
   if (timerId !== null) {
     stopTimer();
     startTimer();

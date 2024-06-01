@@ -1,3 +1,4 @@
+import { CellFactory, CellType } from '../CellFactory.js';
 import Field from '../Field.js';
 import { ArrowCell } from './ArrowCell.js';
 import { Cell } from './Cell.js';
@@ -15,7 +16,7 @@ export class Human extends MovingCell {
     '../pictures/human-stick.png',
     '../pictures/human-axe.png',
     '../pictures/human-pickaxe.png',
-  ]
+  ];
 
   constructor(field: Field<Cell>, x: number, y: number) {
     super(field, x, y);
@@ -37,8 +38,8 @@ export class Human extends MovingCell {
 
   action(): void {
     this.hunger++;
-    if (this.hunger > this.maxHunger) {
-      new DummyCell(this.field, this.position.x, this.position.y);
+    if (this.hunger >= this.maxHunger) {
+      this.dye();
       return;
     }
     super.action();
@@ -77,17 +78,21 @@ export class Human extends MovingCell {
     this.walkOnTile();
     const arrowCell = arrow as ArrowCell;
     this.moveVector = arrowCell.moveVector.copy();
-    console.log(this.moveVector);
   }
 
   private dye() {
-    new DummyCell(this.field, this.position.x, this.position.y);
+    CellFactory.createCellV(
+      CellType.DummyCell,
+      this.field,
+      this.position.copy(),
+    );
   }
 
   private retreat() {
-    console.log("retreat", this.moveVector);
     this.moveVector = this.moveVector.invert();
-    const opposingCell = this.field.getCellV(this.position.add(this.moveVector));
+    const opposingCell = this.field.getCellV(
+      this.position.add(this.moveVector),
+    );
     const cellName = opposingCell?.constructor.name;
     if (this.actions.get(cellName)?.name === 'bound ' + this.retreat.name) {
       return;
@@ -96,7 +101,11 @@ export class Human extends MovingCell {
   }
 
   private walkOnTile() {
-    new DummyCell(this.field, this.position.x, this.position.y);
+    CellFactory.createCellV(
+      CellType.DummyCell,
+      this.field,
+      this.position.copy(),
+    );
     this.position = this.position.add(this.moveVector);
     this.field.setCellV(this.position, this);
   }

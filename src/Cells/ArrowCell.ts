@@ -26,6 +26,8 @@ export class ArrowCell extends BasicCell {
         return '../pictures/arrow_down.png';
       case Direction.LEFT:
         return '../pictures/arrow_left.png';
+      default:
+        throw new Error('Unknown direction');
     }
   }
 }
