@@ -41,6 +41,17 @@ const minScaleFactor = 0.05;
 const maxScaleFactor = 3;
 const scaleStep = 0.01;
 
+let timerSpeed = 1000;
+const speeds = [
+  { value: 1000, name: '1x' },
+  { value: 750, name: '1.5x' },
+  { value: 500, name: '2x' },
+  { value: 250, name: '2.5x' },
+  { value: 2500, name: '0.25x' },
+  { value: 2000, name: '0.5x' },
+  { value: 1500, name: '0.75x' }
+];
+let currentSpeedIndex = 0;
 let timerId: number | null = null;
 let moveCount = 0;
 
@@ -250,7 +261,7 @@ function updateFieldImages() {
 }
 
 function startTimer() {
-  timerId = window.setInterval(makeNextMove, 2000);
+  timerId = window.setInterval(makeNextMove, timerSpeed);
 }
 
 function stopTimer() {
@@ -279,7 +290,7 @@ function makeNextMove() {
   updateDisplays();
   makeHumanIformationDissapiar();
 
-  if (countHumanCells() >= 3) {
+  if (countHumanCells() >= 7) {
     stopTimer();
     gameOverModal.style.display = 'block';
     return;
@@ -375,6 +386,16 @@ function handleResetField() {
   makeHumanIformationDissapiar();
 }
 
+function handleTimerMoveSpeed() {
+  currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+  timerSpeed = speeds[currentSpeedIndex].value;
+  document.getElementById("buttonMoveSpeed")!.innerText = speeds[currentSpeedIndex].name;
+  if (timerId !== null) {
+    stopTimer();
+    startTimer();
+  }
+}
+
 function closeGameOverModal() {
   gameOverModal.style.display = 'none';
 }
@@ -452,6 +473,10 @@ document
 document
   .getElementById('buttonResetField')!
   .addEventListener('click', handleResetField);
+
+document
+  .getElementById('buttonMoveSpeed')!
+  .addEventListener('click', handleTimerMoveSpeed);
 
 document
   .getElementById('buttonOverCreateField')!
