@@ -19,6 +19,7 @@ const sizeModal = document.getElementById('sizeModal') as HTMLElement;
 const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
 const closeButton = document.querySelector('.close') as HTMLElement;
 const startStopMoveButton = document.getElementById('buttonStartStopMove') as HTMLElement;
+const gameOverModal = document.getElementById('gameOverModal') as HTMLElement;
 
 if (
   !fieldContainer ||
@@ -277,6 +278,12 @@ function makeNextMove() {
   moveCount++;
   updateDisplays();
   makeHumanIformationDissapiar();
+
+  if (countHumanCells() >= 3) {
+    stopTimer();
+    gameOverModal.style.display = 'block';
+    return;
+  }
 }
 
 function increaseSize() {
@@ -329,8 +336,7 @@ function handleModalOk() {
     resizeCells();
     makeActualSize();
     resetTimer();
-    const humanCount = countHumanCells();
-    humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+    humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
     makeHumanIformationDissapiar();
     sizeModal.style.display = 'none';
     errorText.style.display = 'none';
@@ -355,8 +361,7 @@ function handleRandomizeField() {
   resizeCells();
   makeActualSize();
   resetTimer();
-  const humanCount = countHumanCells();
-  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
   makeHumanIformationDissapiar();
 }
 
@@ -366,9 +371,27 @@ function handleResetField() {
   resizeCells();
   makeActualSize();
   resetTimer();
-  const humanCount = countHumanCells();
-  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
   makeHumanIformationDissapiar();
+}
+
+function closeGameOverModal() {
+  gameOverModal.style.display = 'none';
+}
+
+function handleCreateFieldGameOver() {
+  handleCreateField();
+  closeGameOverModal();
+}
+
+function handleRandomizeFieldGameOver() {
+  handleRandomizeField();
+  closeGameOverModal();
+}
+
+function handleResetFieldGameOver() {
+  handleResetField();
+  closeGameOverModal();
 }
 
 document
@@ -425,9 +448,22 @@ document
 document
   .getElementById('buttonRandomizeField')!
   .addEventListener('click', handleRandomizeField);
+
 document
   .getElementById('buttonResetField')!
   .addEventListener('click', handleResetField);
+
+document
+  .getElementById('buttonOverCreateField')!
+  .addEventListener('click', handleCreateFieldGameOver);
+
+document
+  .getElementById('buttonOverRandomizeField')!
+  .addEventListener('click', handleRandomizeFieldGameOver);
+
+document
+  .getElementById('buttonOverResetField')!
+  .addEventListener('click', handleResetFieldGameOver);
 
 document.addEventListener(
   'wheel',
