@@ -1,5 +1,5 @@
 import Field from './Field.js';
-import { Cell, DummyCell, ArrowCell, Home, Human, Deer, Tree, Wolf, Stone, Bear, Iron } from './Cells/Cells.js';
+import { Cell, DummyCell, ArrowCell, Home, Human, Deer, Tree, Wolf, Stone, Bear, Iron, Water } from './Cells/Cells.js';
 import { Direction } from './Direction.js';
 
 let fieldSizeX = 10;
@@ -60,13 +60,14 @@ let resizeInterval: NodeJS.Timeout;
 let cellsArray: HTMLElement[] = [];
 
 const cellClasses = [
-  { class: DummyCell, chance: 76 },
+  { class: DummyCell, chance: 90 },
   { class: Deer, chance: 7 },
   { class: Tree, chance: 5 },
   { class: Wolf, chance: 5 },
   { class: Stone, chance: 3 },
   { class: Bear, chance: 3 },
-  { class: Iron, chance: 1 }
+  { class: Iron, chance: 1 },
+  { class: Water, chance: 8 },
 ];
 
 const totalChance = cellClasses.reduce((sum, cell) => sum + cell.chance, 0);
