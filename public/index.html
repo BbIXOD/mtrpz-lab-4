@@ -21,8 +21,8 @@
         <button id="buttonCreateField", title="Creates a field with number that you gave it">
             Create a field
         </button>
-        <button id="buttonNextMove", title="Make the next move of the people">
-            <img src="../pictures/next_move.png" alt="Next Move Icon">
+        <button id="buttonStartStopMove", title="Begins or stops the game">
+            <img src="../pictures/start_game.png" alt="Start Game Icon">
         </button>
         <button id="buttonZoomIn", title="Zoom In field">
             <img src="../pictures/zoom_in.png" alt="Zoom In Icon">
@@ -39,6 +39,25 @@
         <button id="buttonResetField", title="Reset field cells">
             <img src="../pictures/reload.png" alt="Zoom To Actual Size Icon">
         </button>
+        <button id="buttonMoveSpeed", title="Changes speed of moving for cells">
+            1x
+        </button>
+    </div>
+    <div id="gameOverModal", class="modal-game">
+         <div class="gameOverText">
+            <p>Congratulations!!!❤️</p>
+            <p>Game over!🍻</p>
+            <p>You have 7 or more Human cells on the field.</p>
+        </div>
+        <button-game id="buttonOverCreateField", title="Creates a field with number that you gave it">
+            Create a field with fixed size
+        </button-game>
+        <button-game id="buttonOverRandomizeField", title="Randomize field size">
+            Create a field with random size
+        </button-game>
+        <button-game id="buttonOverResetField", title="Reset field cells">
+            Reset the cells on current field
+        </button-game>
     </div>
     <div id="sizeModal", class="modal">
         <div class="modal-content">

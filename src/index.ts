@@ -18,6 +18,8 @@ const fieldSizeInput = document.getElementById(
 const sizeModal = document.getElementById('sizeModal') as HTMLElement;
 const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
 const closeButton = document.querySelector('.close') as HTMLElement;
+const startStopMoveButton = document.getElementById('buttonStartStopMove') as HTMLElement;
+const gameOverModal = document.getElementById('gameOverModal') as HTMLElement;
 
 if (
   !fieldContainer ||
@@ -28,7 +30,8 @@ if (
   !fieldSizeInput ||
   !sizeModal ||
   !modalOkButton ||
-  !closeButton
+  !closeButton ||
+  !startStopMoveButton
 ) {
   throw new Error('Failed to get elements');
 }
@@ -38,6 +41,18 @@ const minScaleFactor = 0.05;
 const maxScaleFactor = 3;
 const scaleStep = 0.01;
 
+let timerSpeed = 1000;
+const speeds = [
+  { value: 1000, name: '1x' },
+  { value: 750, name: '1.5x' },
+  { value: 500, name: '2x' },
+  { value: 250, name: '2.5x' },
+  { value: 2500, name: '0.25x' },
+  { value: 2000, name: '0.5x' },
+  { value: 1500, name: '0.75x' }
+];
+let currentSpeedIndex = 0;
+let timerId: number | null = null;
 let moveCount = 0;
 
 let resizeInterval: NodeJS.Timeout;
@@ -245,13 +260,41 @@ function updateFieldImages() {
   });
 }
 
+function startTimer() {
+  timerId = window.setInterval(makeNextMove, timerSpeed);
+}
+
+function stopTimer() {
+  if (timerId !== null) {
+    clearInterval(timerId);
+    timerId = null;
+  }
+}
+
+function resetTimer() {
+  stopTimer();
+  moveCount = 0;
+  updateDisplays();
+  const img = startStopMoveButton.querySelector('img')!;
+  img.src = './pictures/start_game.png';
+}
+
+function updateDisplays() {
+  moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
+  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
+}
+
 function makeNextMove() {
   performActions();
-  const humanCount = countHumanCells();
-  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
-  moveCount = moveCount + 1;
-  moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
+  moveCount++;
+  updateDisplays();
   makeHumanIformationDissapiar();
+
+  if (countHumanCells() >= 7) {
+    stopTimer();
+    gameOverModal.style.display = 'block';
+    return;
+  }
 }
 
 function increaseSize() {
@@ -283,11 +326,8 @@ function stopResize() {
   clearInterval(resizeInterval);
 }
 
-function handleButtonClick() {
-  alert('Welcome!');
-}
-
 function handleCreateField() {
+  stopTimer();
   sizeModal.style.display = 'block';
   makeHumanIformationDissapiar();
 }
@@ -306,10 +346,8 @@ function handleModalOk() {
     createField();
     resizeCells();
     makeActualSize();
-    moveCount = 0;
-    moveDisplay!.textContent = `Move: 0`;
-    const humanCount = countHumanCells();
-    humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+    resetTimer();
+    humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
     makeHumanIformationDissapiar();
     sizeModal.style.display = 'none';
     errorText.style.display = 'none';
@@ -333,10 +371,8 @@ function handleRandomizeField() {
   createField();
   resizeCells();
   makeActualSize();
-  moveCount = 0;
-  moveDisplay!.textContent = `Move: 0`;
-  const humanCount = countHumanCells();
-  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+  resetTimer();
+  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
   makeHumanIformationDissapiar();
 }
 
@@ -345,11 +381,38 @@ function handleResetField() {
   createField();
   resizeCells();
   makeActualSize();
-  moveCount = 0;
-  moveDisplay!.textContent = `Move: 0`;
-  const humanCount = countHumanCells();
-  humanCountDisplay!.textContent = `Humans alive: ${humanCount}`;
+  resetTimer();
+  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
   makeHumanIformationDissapiar();
+}
+
+function handleTimerMoveSpeed() {
+  currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+  timerSpeed = speeds[currentSpeedIndex].value;
+  document.getElementById("buttonMoveSpeed")!.innerText = speeds[currentSpeedIndex].name;
+  if (timerId !== null) {
+    stopTimer();
+    startTimer();
+  }
+}
+
+function closeGameOverModal() {
+  gameOverModal.style.display = 'none';
+}
+
+function handleCreateFieldGameOver() {
+  handleCreateField();
+  closeGameOverModal();
+}
+
+function handleRandomizeFieldGameOver() {
+  handleRandomizeField();
+  closeGameOverModal();
+}
+
+function handleResetFieldGameOver() {
+  handleResetField();
+  closeGameOverModal();
 }
 
 document
@@ -361,13 +424,23 @@ document.getElementById('closeModal')!.addEventListener('click', function () {
   ) as HTMLParagraphElement;
   errorText.style.display = 'none';
   makeHumanIformationDissapiar();
+  startTimer();
 });
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);
 
 document
-  .getElementById('buttonNextMove')!
-  .addEventListener('click', makeNextMove);
+  .getElementById('buttonStartStopMove')!
+  .addEventListener('click', () => {
+    const img = startStopMoveButton.querySelector('img')!;
+    if (img.src.includes('start_game.png')) {
+      startTimer();
+      img.src = './pictures/pause_game.png';
+    } else if (img.src.includes('pause_game.png')) {
+      stopTimer();
+      img.src = './pictures/start_game.png';
+    }
+  });
 
 document
   .getElementById('buttonZoomIn')!
@@ -396,9 +469,26 @@ document
 document
   .getElementById('buttonRandomizeField')!
   .addEventListener('click', handleRandomizeField);
+
 document
   .getElementById('buttonResetField')!
   .addEventListener('click', handleResetField);
+
+document
+  .getElementById('buttonMoveSpeed')!
+  .addEventListener('click', handleTimerMoveSpeed);
+
+document
+  .getElementById('buttonOverCreateField')!
+  .addEventListener('click', handleCreateFieldGameOver);
+
+document
+  .getElementById('buttonOverRandomizeField')!
+  .addEventListener('click', handleRandomizeFieldGameOver);
+
+document
+  .getElementById('buttonOverResetField')!
+  .addEventListener('click', handleResetFieldGameOver);
 
 document.addEventListener(
   'wheel',
