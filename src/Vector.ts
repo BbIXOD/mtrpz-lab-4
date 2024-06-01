@@ -1,7 +1,7 @@
 export default class Vector {
     // eslint-disable-next-line class-methods-use-this
   constructor(public x: number, public y: number) {}
-
+  
   add(vector: Vector) {
     return new Vector(this.x + vector.x, this.y + vector.y);
   }

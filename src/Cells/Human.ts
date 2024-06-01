@@ -7,7 +7,7 @@ import { MovingCell } from './MovingCell.js';
 export class Human extends MovingCell {
   picture = '../pictures/human.png';
   hunger = 0;
-  private maxHunger = 20;
+  private maxHunger = 2000;
   evoStage = 0;
 
   stagePictures = [
@@ -76,7 +76,8 @@ export class Human extends MovingCell {
   private walkOnArrow(arrow: Cell) {
     this.walkOnTile();
     const arrowCell = arrow as ArrowCell;
-    this.moveVector = arrowCell.moveVector;
+    this.moveVector = arrowCell.moveVector.copy();
+    console.log(this.moveVector);
   }
 
   private dye() {
@@ -84,13 +85,14 @@ export class Human extends MovingCell {
   }
 
   private retreat() {
+    console.log("retreat", this.moveVector);
     this.moveVector = this.moveVector.invert();
     const opposingCell = this.field.getCellV(this.position.add(this.moveVector));
     const cellName = opposingCell?.constructor.name;
     if (this.actions.get(cellName)?.name === 'bound ' + this.retreat.name) {
       return;
     }
-    this.walkOnTile();
+    super.action();
   }
 
   private walkOnTile() {
