@@ -5,7 +5,7 @@ import { Human } from './Human.js';
 
 export class Home extends BasicCell {
   picture = '../pictures/cabin.png';
-  private productionRate = 500;
+  private productionRate = 5;
   private tillProduction = this.productionRate - 1;
   private humanOffset = new Vector(0, 1);
 

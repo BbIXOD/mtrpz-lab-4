@@ -7,7 +7,7 @@ import { MovingCell } from './MovingCell.js';
 export class Human extends MovingCell {
   picture = '../pictures/human.png';
   hunger = 0;
-  private maxHunger = 2000;
+  private maxHunger = 20;
   evoStage = 0;
 
   stagePictures = [
