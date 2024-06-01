@@ -7,7 +7,7 @@ import { MovingCell } from './MovingCell.js';
 export class Human extends MovingCell {
   picture = '../pictures/human.png';
   hunger = 0;
-  private maxHunger = 20;
+  private maxHunger = 2000;
   evoStage = 0;
 
   stagePictures = [
@@ -31,6 +31,8 @@ export class Human extends MovingCell {
     this.actions.set('Deer', this.resetHunger.bind(this));
     this.actions.set('Wolf', this.retreat.bind(this));
     this.actions.set('Bear', this.retreat.bind(this));
+
+    this.actions.set('Water', this.dye.bind(this));
   }
 
   action(): void {
@@ -67,22 +69,30 @@ export class Human extends MovingCell {
         this.maxHunger = 30; // TODO: think about other buff
         break;
     }
+
+    this.walkOnTile();
   }
 
   private walkOnArrow(arrow: Cell) {
     this.walkOnTile();
     const arrowCell = arrow as ArrowCell;
-    this.moveVector = arrowCell.moveVector;
+    this.moveVector = arrowCell.moveVector.copy();
+    console.log(this.moveVector);
+  }
+
+  private dye() {
+    new DummyCell(this.field, this.position.x, this.position.y);
   }
 
   private retreat() {
+    console.log("retreat", this.moveVector);
     this.moveVector = this.moveVector.invert();
     const opposingCell = this.field.getCellV(this.position.add(this.moveVector));
     const cellName = opposingCell?.constructor.name;
     if (this.actions.get(cellName)?.name === 'bound ' + this.retreat.name) {
       return;
     }
-    this.walkOnTile();
+    super.action();
   }
 
   private walkOnTile() {

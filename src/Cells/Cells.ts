@@ -12,3 +12,5 @@ export { Iron } from './Iron.js';
 export { Wolf } from './Wolf.js';
 export { Bear } from './Bear.js';
 export { Deer } from './Deer.js';
+
+export { Water } from './Water.js';
