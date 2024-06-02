@@ -351,6 +351,7 @@ function stopResize() {
 
 function handleCreateField() {
   stopTimer();
+  startStopMoveButton.querySelector('img')!.src = './pictures/start_game.png';
   sizeModal.style.display = 'block';
   makeHumanIformationDissapiar();
 }
@@ -448,7 +449,6 @@ document.getElementById('closeModal')!.addEventListener('click', function () {
   ) as HTMLParagraphElement;
   errorText.style.display = 'none';
   makeHumanIformationDissapiar();
-  startTimer();
 });
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);
