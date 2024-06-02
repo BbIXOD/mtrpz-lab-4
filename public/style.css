@@ -24,11 +24,19 @@ body, html {
     left: 1vh;
 }
 
-#moveDisplay {
+#speedDisplay {
     color: black;
     font-size: 4vh;
     position: absolute;
     top: 7vh;
+    left: 1vh;
+}
+
+#moveDisplay {
+    color: black;
+    font-size: 4vh;
+    position: absolute;
+    top: 13vh;
     left: 1vh;
 }
 

@@ -10,6 +10,7 @@ const fieldContainer = document.getElementById('field-container');
 const fieldElement = document.getElementById('field');
 const panelElement = document.getElementById('panel');
 const scaleDisplay = document.getElementById('scaleDisplay');
+const speedDisplay = document.getElementById('speedDisplay');
 const moveDisplay = document.getElementById('moveDisplay');
 const humanCountDisplay = document.getElementById('humanCountDisplay');
 const humanHungerDisplay = document.getElementById('humanHungerDisplay');
@@ -29,6 +30,7 @@ if (
   !fieldElement ||
   !panelElement ||
   !scaleDisplay ||
+  !speedDisplay ||
   !moveDisplay ||
   !fieldSizeInput ||
   !sizeModal ||
@@ -46,13 +48,13 @@ const scaleStep = 0.01;
 
 let timerSpeed = 1000;
 const speeds = [
-  { value: 1000, name: '1x' },
-  { value: 750, name: '1.5x' },
-  { value: 500, name: '2x' },
-  { value: 250, name: '2.5x' },
-  { value: 2500, name: '0.25x' },
-  { value: 2000, name: '0.5x' },
-  { value: 1500, name: '0.75x' },
+  { value: 1000, name: '1x', picture: './pictures/1x_speed.png' },
+  { value: 750, name: '1.5x', picture: './pictures/1.5x_speed.png' },
+  { value: 500, name: '2x', picture: './pictures/2x_speed.png' },
+  { value: 250, name: '2.5x', picture: './pictures/2.5x_speed.png' },
+  { value: 2500, name: '0.25x', picture: './pictures/0.25x_speed.png' },
+  { value: 2000, name: '0.5x', picture: './pictures/0.5x_speed.png' },
+  { value: 1500, name: '0.75x', picture: './pictures/0.75x_speed.png' },
 ];
 let currentSpeedIndex = 0;
 let timerId: number | null = null;
@@ -250,7 +252,35 @@ function countHumanCells(): number {
   return count;
 }
 
+function findHomeCell(): {x: number, y: number}[] {
+  const homeCells: {x: number, y: number}[] = [];
+  for (let y = 0; y < fieldSizeY; y++) {
+    for (let x = 0; x < fieldSizeX; x++) {
+      const cell = field.getCell(x, y);
+      if (cell instanceof Home) {
+        homeCells.push({x, y});
+      }
+    }
+  }
+  return homeCells;
+}
+
+function isInProhibitedZone(x: number, y: number, homeCells: {x: number, y: number}[]): boolean {
+  const radius = 2;
+  for (const homeCell of homeCells) {
+    if (
+      Math.abs(homeCell.x - x) <= radius &&
+      Math.abs(homeCell.y - y) <= radius
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function performActions() {
+  const homeCells = findHomeCell();
+
   for (let y = 0; y < fieldSizeY; y++) {
     for (let x = 0; x < fieldSizeX; x++) {
       const cell = field.getCell(x, y);
@@ -262,8 +292,16 @@ function performActions() {
       const cell = field.getCell(x, y);
       if (cell.didAction) continue;
       cell.action();
+
+      if (cell instanceof DummyCell && !isInProhibitedZone(x, y, homeCells)) {
+        if (Math.random() <= 0.005) {
+          const CellClass = getRandomCellClass();
+          CellFactory.createCell(CellClass, field, x, y);
+        }
+      }
     }
   }
+
   updateFieldImages();
 }
 
@@ -351,6 +389,7 @@ function stopResize() {
 
 function handleCreateField() {
   stopTimer();
+  startStopMoveButton.querySelector('img')!.src = './pictures/start_game.png';
   sizeModal.style.display = 'block';
   makeHumanIformationDissapiar();
 }
@@ -412,8 +451,9 @@ function handleResetField() {
 function handleTimerMoveSpeed() {
   currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
   timerSpeed = speeds[currentSpeedIndex].value;
-  document.getElementById('buttonMoveSpeed')!.innerText =
-    speeds[currentSpeedIndex].name;
+  document.getElementById('buttonMoveSpeed')!.querySelector('img')!.src =
+    speeds[currentSpeedIndex].picture;
+  speedDisplay!.textContent = `Speed: ${speeds[currentSpeedIndex].name}`;
   if (timerId !== null) {
     stopTimer();
     startTimer();
@@ -448,7 +488,6 @@ document.getElementById('closeModal')!.addEventListener('click', function () {
   ) as HTMLParagraphElement;
   errorText.style.display = 'none';
   makeHumanIformationDissapiar();
-  startTimer();
 });
 modalOkButton.addEventListener('click', handleModalOk);
 closeButton.addEventListener('click', handleCloseModal);
