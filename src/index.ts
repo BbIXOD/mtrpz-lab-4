@@ -10,6 +10,7 @@ const fieldContainer = document.getElementById('field-container');
 const fieldElement = document.getElementById('field');
 const panelElement = document.getElementById('panel');
 const scaleDisplay = document.getElementById('scaleDisplay');
+const speedDisplay = document.getElementById('speedDisplay');
 const moveDisplay = document.getElementById('moveDisplay');
 const humanCountDisplay = document.getElementById('humanCountDisplay');
 const humanHungerDisplay = document.getElementById('humanHungerDisplay');
@@ -29,6 +30,7 @@ if (
   !fieldElement ||
   !panelElement ||
   !scaleDisplay ||
+  !speedDisplay ||
   !moveDisplay ||
   !fieldSizeInput ||
   !sizeModal ||
@@ -415,6 +417,7 @@ function handleTimerMoveSpeed() {
   timerSpeed = speeds[currentSpeedIndex].value;
   document.getElementById('buttonMoveSpeed')!.querySelector('img')!.src =
     speeds[currentSpeedIndex].picture;
+  speedDisplay!.textContent = `Speed: ${speeds[currentSpeedIndex].name}`;
   if (timerId !== null) {
     stopTimer();
     startTimer();
