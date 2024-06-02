@@ -252,7 +252,35 @@ function countHumanCells(): number {
   return count;
 }
 
+function findHomeCell(): {x: number, y: number}[] {
+  const homeCells: {x: number, y: number}[] = [];
+  for (let y = 0; y < fieldSizeY; y++) {
+    for (let x = 0; x < fieldSizeX; x++) {
+      const cell = field.getCell(x, y);
+      if (cell instanceof Home) {
+        homeCells.push({x, y});
+      }
+    }
+  }
+  return homeCells;
+}
+
+function isInProhibitedZone(x: number, y: number, homeCells: {x: number, y: number}[]): boolean {
+  const radius = 2;
+  for (const homeCell of homeCells) {
+    if (
+      Math.abs(homeCell.x - x) <= radius &&
+      Math.abs(homeCell.y - y) <= radius
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function performActions() {
+  const homeCells = findHomeCell();
+
   for (let y = 0; y < fieldSizeY; y++) {
     for (let x = 0; x < fieldSizeX; x++) {
       const cell = field.getCell(x, y);
@@ -264,8 +292,16 @@ function performActions() {
       const cell = field.getCell(x, y);
       if (cell.didAction) continue;
       cell.action();
+
+      if (cell instanceof DummyCell && !isInProhibitedZone(x, y, homeCells)) {
+        if (Math.random() <= 0.005) {
+          const CellClass = getRandomCellClass();
+          CellFactory.createCell(CellClass, field, x, y);
+        }
+      }
     }
   }
+
   updateFieldImages();
 }
 
