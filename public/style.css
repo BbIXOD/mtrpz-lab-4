@@ -74,6 +74,7 @@ body, html {
     top: 1vh;
     margin-left: 85%;
 }
+
 #humanCountDisplay {
     color: black;
     font-size: 4vh;
@@ -81,6 +82,7 @@ body, html {
     top: 7vh;
     margin-left: 85%;
 }
+
 #humanHungerDisplay {
     color: black;
     font-size: 4vh;
@@ -88,6 +90,17 @@ body, html {
     top: 15vh;
     margin-left: 85%;
     display: none;
+    background-color: lightgreen;
+}
+
+#humanDirectionDisplay {
+    color: black;
+    font-size: 4vh;
+    position: absolute;
+    top: 21vh;
+    margin-left: 85%;
+    display: none;
+    background-color: lightgreen;
 }
 
 #panel {

@@ -14,6 +14,7 @@ const speedDisplay = document.getElementById('speedDisplay');
 const moveDisplay = document.getElementById('moveDisplay');
 const humanCountDisplay = document.getElementById('humanCountDisplay');
 const humanHungerDisplay = document.getElementById('humanHungerDisplay');
+const humanDirectionDisplay = document.getElementById('humanDirectionDisplay');
 const fieldSizeInput = document.getElementById(
   'fieldSizeInput',
 ) as HTMLInputElement;
@@ -219,6 +220,9 @@ function cycleCellState(cell: Cell) {
   if (cell instanceof Human) {
     humanHungerDisplay!.textContent = `Hunger: ${cell.hunger}`;
     humanHungerDisplay!.style.display = 'block';
+    const direction = (cell.moveVector.x === 0) ? (cell.moveVector.y === 1) ? 'DOWN' : 'UP' : (cell.moveVector.x === 1) ? 'RIGHT' : 'LEFT';
+    humanDirectionDisplay!.textContent = `Direction: ${direction}`;
+    humanDirectionDisplay!.style.display = 'block';
   }
 }
 
@@ -237,6 +241,8 @@ function homeCellExists(): boolean {
 function makeHumanIformationDissapiar() {
   humanHungerDisplay!.textContent = `Hunger: :)`;
   humanHungerDisplay!.style.display = 'none';
+  humanDirectionDisplay!.textContent = 'Direction: :)';
+  humanDirectionDisplay!.style.display = 'none';
 }
 
 function countHumanCells(): number {
