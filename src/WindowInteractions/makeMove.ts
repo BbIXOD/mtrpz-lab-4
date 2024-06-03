@@ -93,7 +93,7 @@ export function makeNextMove() {
     updateDisplays();
     makeHumanIformationDissapiar();
   
-    if (countHumanCells() >= 2) {
+    if (countHumanCells() >= 7) {
       stopTimer();
       isGameOver = true;
       gameOverModal.style.display = 'block';
