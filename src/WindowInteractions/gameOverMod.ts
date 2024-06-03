@@ -1,6 +1,6 @@
-import { sizeModal, startStopMoveButton, gameOverModal, } from '../index.js';
+import { sizeModal, startStopMoveButton, gameOverModal, } from '../window-data.js';
 import { makeHumanIformationDissapiar, } from './initializeCells.js';
-import { stopTimer, } from './changeSpeed.js';
+import { stopTimer, } from './makeMove.js';
 import { handleRandomizeField, handleResetField, } from './changeCellSizeOnField.js';
 
 export function handleCreateField() {
