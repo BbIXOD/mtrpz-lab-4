@@ -1,10 +1,9 @@
 import { Human } from '../Cells/Cells.js';
-import { humanCountDisplay, fieldSizeInput, sizeModal, startStopMoveButton, gameOverModal, } from '../index.js';
+import { humanCountDisplay, fieldSizeInput, sizeModal, startStopMoveButton, gameOverModal, } from '../window-data.js';
 import { makeActualSize, } from './changeFieldSize.js';
 import { initializeField, fieldSizeX, fieldSizeY, setFieldSize, field, setNewField, } from './initializeField.js';
 import { resizeCells, createField, makeHumanIformationDissapiar, } from './initializeCells.js';
-import { stopTimer, } from './changeSpeed.js';
-import { changeMoveCount, updateDisplays, isGameOver, changeGameOver, } from './makeMove.js';
+import { changeMoveCount, updateDisplays, isGameOver, changeGameOver, stopTimer, } from './makeMove.js';
 
 function resetTimer() {
     stopTimer();

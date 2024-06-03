@@ -9,7 +9,7 @@ import {
     scaleDisplay,
     humanHungerDisplay,
     humanDirectionDisplay,
-} from '../index.js';
+} from '../window-data.js';
 
 import {
     fieldSizeX,
