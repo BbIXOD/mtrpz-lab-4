@@ -1,29 +1,55 @@
-import Field from './Field.js';
-import { Direction } from './Direction.js';
-import { ArrowCell, Cell, DummyCell, Home, Human } from './Cells/Cells.js';
-import { CellFactory, CellType } from './CellFactory.js';
+import {
+  initializeField,
+} from './WindowInteractions/initializeField.js';
 
-let fieldSizeX = 15;
-let fieldSizeY = fieldSizeX;
-let field = new Field<Cell>(fieldSizeX, fieldSizeY);
-const fieldContainer = document.getElementById('field-container');
-const fieldElement = document.getElementById('field');
-const panelElement = document.getElementById('panel');
-const scaleDisplay = document.getElementById('scaleDisplay');
-const speedDisplay = document.getElementById('speedDisplay');
-const moveDisplay = document.getElementById('moveDisplay');
-const humanCountDisplay = document.getElementById('humanCountDisplay');
-const humanHungerDisplay = document.getElementById('humanHungerDisplay');
-const fieldSizeInput = document.getElementById(
-  'fieldSizeInput',
-) as HTMLInputElement;
-const sizeModal = document.getElementById('sizeModal') as HTMLElement;
-const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
-const closeButton = document.querySelector('.close') as HTMLElement;
-const startStopMoveButton = document.getElementById(
-  'buttonStartStopMove',
-) as HTMLElement;
-const gameOverModal = document.getElementById('gameOverModal') as HTMLElement;
+import {
+  resizeCells,
+  createField,
+  makeHumanIformationDissapiar,
+} from './WindowInteractions/initializeCells.js';
+
+import {
+  makeActualSize,
+  startIncreaseSizeTime,
+  startDecreaseSizeTime,
+  stopResize,
+} from './WindowInteractions/changeFieldSize.js';
+
+import {
+  startTimer,
+  stopTimer,
+  handleTimerMoveSpeed,
+} from './WindowInteractions/changeSpeed.js';
+
+import {
+  handleModalOk,
+  handleCloseModal,
+  handleRandomizeField,
+  handleResetField,
+} from './WindowInteractions/changeCellSizeOnField.js';
+
+import {
+  handleCreateField,
+  handleCreateFieldGameOver,
+  handleRandomizeFieldGameOver,
+  handleResetFieldGameOver,
+} from './WindowInteractions/gameOverMod.js';
+
+export const fieldContainer = document.getElementById('field-container');
+export const fieldElement = document.getElementById('field');
+export const panelElement = document.getElementById('panel');
+export const scaleDisplay = document.getElementById('scaleDisplay');
+export const speedDisplay = document.getElementById('speedDisplay');
+export const moveDisplay = document.getElementById('moveDisplay');
+export const humanCountDisplay = document.getElementById('humanCountDisplay');
+export const humanHungerDisplay = document.getElementById('humanHungerDisplay');
+export const humanDirectionDisplay = document.getElementById('humanDirectionDisplay');
+export const fieldSizeInput = document.getElementById('fieldSizeInput') as HTMLInputElement;
+export const sizeModal = document.getElementById('sizeModal') as HTMLElement;
+export const modalOkButton = document.getElementById('modalOkButton') as HTMLElement;
+export const closeButton = document.querySelector('.close') as HTMLElement;
+export const startStopMoveButton = document.getElementById('buttonStartStopMove') as HTMLElement;
+export const gameOverModal = document.getElementById('gameOverModal') as HTMLElement;
 
 if (
   !fieldContainer ||
@@ -39,444 +65,6 @@ if (
   !startStopMoveButton
 ) {
   throw new Error('Failed to get elements');
-}
-
-let scaleFactor = 1;
-const minScaleFactor = 0.05;
-const maxScaleFactor = 3;
-const scaleStep = 0.01;
-
-let timerSpeed = 1000;
-const speeds = [
-  { value: 1000, name: '1x', picture: './pictures/1x_speed.png' },
-  { value: 750, name: '1.5x', picture: './pictures/1.5x_speed.png' },
-  { value: 500, name: '2x', picture: './pictures/2x_speed.png' },
-  { value: 250, name: '2.5x', picture: './pictures/2.5x_speed.png' },
-  { value: 2500, name: '0.25x', picture: './pictures/0.25x_speed.png' },
-  { value: 2000, name: '0.5x', picture: './pictures/0.5x_speed.png' },
-  { value: 1500, name: '0.75x', picture: './pictures/0.75x_speed.png' },
-];
-let currentSpeedIndex = 0;
-let timerId: number | null = null;
-let moveCount = 0;
-
-let resizeInterval: NodeJS.Timeout;
-
-let cellsArray: HTMLElement[] = [];
-
-const cellClasses = [
-  { class: CellType.DummyCell, chance: 90 },
-  { class: CellType.Water, chance: 8 },
-  { class: CellType.Deer, chance: 7 },
-  { class: CellType.Tree, chance: 5 },
-  { class: CellType.Wolf, chance: 5 },
-  { class: CellType.Stone, chance: 3 },
-  { class: CellType.Bear, chance: 3 },
-  { class: CellType.Iron, chance: 1 },
-];
-
-const totalChance = cellClasses.reduce((sum, cell) => sum + cell.chance, 0);
-
-function getRandomCellClass() {
-  let random = Math.random() * totalChance;
-  for (let i = 0; i < cellClasses.length; i++) {
-    if (random < cellClasses[i].chance) {
-      return cellClasses[i].class;
-    }
-    random -= cellClasses[i].chance;
-  }
-  return CellType.DummyCell;
-}
-
-function initializeField() {
-  for (let x = 0; x < fieldSizeX; x++) {
-    for (let y = 0; y < fieldSizeY; y++) {
-      const CellClass = getRandomCellClass();
-      CellFactory.createCell(CellClass, field, x, y);
-    }
-  }
-}
-
-function resizeCells() {
-  if (!fieldContainer || !fieldElement || !panelElement) return;
-  const containerWidth = fieldContainer.clientWidth;
-  const containerHeight = window.innerHeight - panelElement.offsetHeight;
-
-  const baseCellWidth = containerWidth / fieldSizeX;
-  const baseCellHeight = containerHeight / fieldSizeY;
-  const baseCellSize = Math.min(baseCellWidth, baseCellHeight);
-
-  const cellSize = baseCellSize * scaleFactor;
-
-  fieldElement.style.width = `${baseCellSize * fieldSizeX}px`;
-  fieldElement.style.height = `${baseCellSize * fieldSizeY}px`;
-
-  fieldElement.style.gridTemplateColumns = `repeat(${fieldSizeX}, ${cellSize}px)`;
-  fieldElement.style.gridTemplateRows = `repeat(${fieldSizeY}, ${cellSize}px)`;
-
-  cellsArray.forEach((element) => {
-    element.style.width = `${cellSize}px`;
-    element.style.height = `${cellSize}px`;
-
-    const img = element.querySelector('img');
-    if (img) {
-      img.style.width = `${cellSize}px`;
-      img.style.height = `${cellSize}px`;
-    }
-  });
-
-  scaleDisplay!.textContent = `Scale: ${Math.round(scaleFactor * 100)}%`;
-}
-
-function createField() {
-  cellsArray = [];
-
-  while (fieldElement!.firstChild) {
-    fieldElement!.removeChild(fieldElement!.firstChild);
-  }
-
-  for (let y = 0; y < fieldSizeY; y++) {
-    for (let x = 0; x < fieldSizeX; x++) {
-      const cellElement = document.createElement('div');
-      cellElement.className = 'cell';
-      cellElement.dataset.x = x.toString();
-      cellElement.dataset.y = y.toString();
-      cellElement.addEventListener('click', handleCellClick);
-
-      const cell = field.getCell(x, y);
-      if (cell.picture) {
-        const img = document.createElement('img');
-        img.src = cell.picture;
-        img.alt = `Cell at (${x}, ${y})`;
-        cellElement.appendChild(img);
-      }
-
-      cellsArray.push(cellElement);
-
-      fieldElement!.appendChild(cellElement);
-    }
-  }
-}
-
-function handleCellClick(event: MouseEvent) {
-  if (!event.target) return;
-  const target = event.target as HTMLElement;
-  const closestCell = target.closest('.cell') as HTMLElement;
-  if (!closestCell) return;
-
-  const x = closestCell.dataset.x;
-  const y = closestCell.dataset.y;
-  const cell = field.getCell(Number(x), Number(y));
-
-  if (cell) {
-    cycleCellState(cell);
-    updateFieldImages();
-  }
-}
-
-function cycleCellState(cell: Cell) {
-  makeHumanIformationDissapiar();
-  if (cell instanceof DummyCell) {
-    if (!homeCellExists()) {
-      CellFactory.createCellV(CellType.Home, field, cell.position);
-    } else {
-      CellFactory.createArrowCell(
-        field,
-        cell.position.x,
-        cell.position.y,
-        Direction.UP,
-      );
-    }
-  }
-
-  if (cell instanceof ArrowCell) {
-    if (cell.arrowDirection === Direction.UP) {
-      CellFactory.createArrowCell(
-        field,
-        cell.position.x,
-        cell.position.y,
-        Direction.RIGHT,
-      );
-    } else if (cell.arrowDirection === Direction.RIGHT) {
-      CellFactory.createArrowCell(
-        field,
-        cell.position.x,
-        cell.position.y,
-        Direction.DOWN,
-      );
-    } else if (cell.arrowDirection === Direction.DOWN) {
-      CellFactory.createArrowCell(
-        field,
-        cell.position.x,
-        cell.position.y,
-        Direction.LEFT,
-      );
-    } else if (cell.arrowDirection === Direction.LEFT) {
-      CellFactory.createCellV(CellType.DummyCell, field, cell.position);
-    }
-  }
-
-  if (cell instanceof Human) {
-    humanHungerDisplay!.textContent = `Hunger: ${cell.hunger}`;
-    humanHungerDisplay!.style.display = 'block';
-  }
-}
-
-function homeCellExists(): boolean {
-  for (let y = 0; y < fieldSizeY; y++) {
-    for (let x = 0; x < fieldSizeX; x++) {
-      const cell = field.getCell(x, y);
-      if (cell instanceof Home) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-function makeHumanIformationDissapiar() {
-  humanHungerDisplay!.textContent = `Hunger: :)`;
-  humanHungerDisplay!.style.display = 'none';
-}
-
-function countHumanCells(): number {
-  let count = 0;
-  for (let y = 0; y < fieldSizeY; y++) {
-    for (let x = 0; x < fieldSizeX; x++) {
-      const cell = field.getCell(x, y);
-      if (cell instanceof Human) {
-        count++;
-      }
-    }
-  }
-  return count;
-}
-
-function findHomeCell(): {x: number, y: number}[] {
-  const homeCells: {x: number, y: number}[] = [];
-  for (let y = 0; y < fieldSizeY; y++) {
-    for (let x = 0; x < fieldSizeX; x++) {
-      const cell = field.getCell(x, y);
-      if (cell instanceof Home) {
-        homeCells.push({x, y});
-      }
-    }
-  }
-  return homeCells;
-}
-
-function isInProhibitedZone(x: number, y: number, homeCells: {x: number, y: number}[]): boolean {
-  const radius = 2;
-  for (const homeCell of homeCells) {
-    if (
-      Math.abs(homeCell.x - x) <= radius &&
-      Math.abs(homeCell.y - y) <= radius
-    ) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function performActions() {
-  const homeCells = findHomeCell();
-
-  for (let y = 0; y < fieldSizeY; y++) {
-    for (let x = 0; x < fieldSizeX; x++) {
-      const cell = field.getCell(x, y);
-      cell.didAction = false;
-    }
-  }
-  for (let y = 0; y < fieldSizeY; y++) {
-    for (let x = 0; x < fieldSizeX; x++) {
-      const cell = field.getCell(x, y);
-      if (cell.didAction) continue;
-      cell.action();
-
-      if (cell instanceof DummyCell && !isInProhibitedZone(x, y, homeCells)) {
-        if (Math.random() <= 0.005) {
-          const CellClass = getRandomCellClass();
-          CellFactory.createCell(CellClass, field, x, y);
-        }
-      }
-    }
-  }
-
-  updateFieldImages();
-}
-
-function updateFieldImages() {
-  cellsArray.forEach((element) => {
-    const x = parseInt(element.dataset.x || '0');
-    const y = parseInt(element.dataset.y || '0');
-    const fieldCell = field.getCell(x, y);
-
-    if (fieldCell.picture) {
-      let img = element.querySelector('img');
-      if (!img) {
-        img = document.createElement('img');
-        element.appendChild(img);
-      }
-      img.src = fieldCell.picture;
-    }
-  });
-}
-
-function startTimer() {
-  timerId = window.setInterval(makeNextMove, timerSpeed);
-}
-
-function stopTimer() {
-  if (timerId !== null) {
-    clearInterval(timerId);
-    timerId = null;
-  }
-}
-
-function resetTimer() {
-  stopTimer();
-  moveCount = 0;
-  updateDisplays();
-  const img = startStopMoveButton.querySelector('img')!;
-  img.src = './pictures/start_game.png';
-}
-
-function updateDisplays() {
-  moveDisplay!.textContent = `Move: ${Math.round(moveCount)}`;
-  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
-}
-
-function makeNextMove() {
-  performActions();
-  moveCount++;
-  updateDisplays();
-  makeHumanIformationDissapiar();
-
-  if (countHumanCells() >= 7) {
-    stopTimer();
-    gameOverModal.style.display = 'block';
-  }
-}
-
-function increaseSize() {
-  scaleFactor = Math.min(maxScaleFactor, scaleFactor + scaleStep);
-  resizeCells();
-}
-
-function decreaseSize() {
-  scaleFactor = Math.max(minScaleFactor, scaleFactor - scaleStep);
-  resizeCells();
-}
-
-function makeActualSize() {
-  scaleFactor = 1;
-  resizeCells();
-}
-
-function startIncreaseSizeTime() {
-  increaseSize();
-  resizeInterval = setInterval(increaseSize, 100);
-}
-
-function startDecreaseSizeTime() {
-  decreaseSize();
-  resizeInterval = setInterval(decreaseSize, 100);
-}
-
-function stopResize() {
-  clearInterval(resizeInterval);
-}
-
-function handleCreateField() {
-  stopTimer();
-  startStopMoveButton.querySelector('img')!.src = './pictures/start_game.png';
-  sizeModal.style.display = 'block';
-  makeHumanIformationDissapiar();
-}
-
-function handleModalOk() {
-  const newSize = parseInt(fieldSizeInput.value);
-  const errorText = document.getElementById(
-    'errorText',
-  ) as HTMLParagraphElement;
-
-  if (newSize >= 10 && newSize <= 100) {
-    fieldSizeX = newSize;
-    fieldSizeY = newSize;
-    field = new Field<Cell>(fieldSizeX, fieldSizeY);
-    initializeField();
-    createField();
-    resizeCells();
-    makeActualSize();
-    resetTimer();
-    humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
-    makeHumanIformationDissapiar();
-    sizeModal.style.display = 'none';
-    errorText.style.display = 'none';
-  } else {
-    errorText.textContent = 'Please enter a number between 10 and 100.';
-    errorText.style.display = 'block';
-  }
-}
-
-function handleCloseModal() {
-  sizeModal.style.display = 'none';
-  makeHumanIformationDissapiar();
-}
-
-function handleRandomizeField() {
-  const newSize = Math.floor(Math.random() * (100 - 10 + 1)) + 10;
-  fieldSizeX = newSize;
-  fieldSizeY = newSize;
-  field = new Field<Cell>(fieldSizeX, fieldSizeY);
-  initializeField();
-  createField();
-  resizeCells();
-  makeActualSize();
-  resetTimer();
-  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
-  makeHumanIformationDissapiar();
-}
-
-function handleResetField() {
-  initializeField();
-  createField();
-  resizeCells();
-  makeActualSize();
-  resetTimer();
-  humanCountDisplay!.textContent = `Humans alive: ${countHumanCells()}`;
-  makeHumanIformationDissapiar();
-}
-
-function handleTimerMoveSpeed() {
-  currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
-  timerSpeed = speeds[currentSpeedIndex].value;
-  document.getElementById('buttonMoveSpeed')!.querySelector('img')!.src =
-    speeds[currentSpeedIndex].picture;
-  speedDisplay!.textContent = `Speed: ${speeds[currentSpeedIndex].name}`;
-  if (timerId !== null) {
-    stopTimer();
-    startTimer();
-  }
-}
-
-function closeGameOverModal() {
-  gameOverModal.style.display = 'none';
-}
-
-function handleCreateFieldGameOver() {
-  handleCreateField();
-  closeGameOverModal();
-}
-
-function handleRandomizeFieldGameOver() {
-  handleRandomizeField();
-  closeGameOverModal();
-}
-
-function handleResetFieldGameOver() {
-  handleResetField();
-  closeGameOverModal();
 }
 
 document
